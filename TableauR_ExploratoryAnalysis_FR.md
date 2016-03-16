@@ -13,11 +13,11 @@
 <br>  
 
 ### Prérequis
-Tous des fichiers sont disponible sur [Github](https://github.com/simonkth/TableauR_ExploratoryAnalysis).  
+Tous des fichiers sont disponible dans le [répertoire Github](https://github.com/simonkth/TableauR_ExploratoryAnalysis).  
 Si vous souhaitez reproduire cet outil, assurez-vous de remplir les prérequis suivants avant de continuer :  
 
-* avoir installé une version de Tableau Desktop supportant l'intégration avec R (8.1 ou supérieur). Vous pouvez vous procurer une version d'essai à [cette adresse](http://get.tableau.com/fr-fr/partner-trial.html?partner=29294)  
-* avoir installé R version 3.0.2 ou supérieur. R est disponible [ici](https://www.r-project.org/)  
-* avoir ajouté R à votre variable d'environnement _path_ (par exemple, "C:\Program Files\R\R-3.0.2\bin\x64")  
+* avoir installé une version de Tableau Desktop supportant l'intégration avec R (8.1 ou supérieur). Vous pouvez vous procurer une version d'essai à [cette adresse](http://get.tableau.com/fr-fr/partner-trial.html?partner=29294) ;  
+* avoir installé R version 3.0.2 ou supérieur. R est disponible [ici](https://www.r-project.org/) ;  
+* avoir ajouté R à votre variable d'environnement _path_ (par exemple, "C:\Program Files\R\R-3.0.2\bin\x64") ;  
 * avoir lancé Rserve en tâche d'arrière plan. Pour une configuration rapide et suffisante dans notre cas, téléchargez le contenu du dossier _Rserve_ dans le [répertoire Github](https://github.com/simonkth/TableauR_ExploratoryAnalysis) et double-cliquez sur _Rserve.cmd_. Pour une installation plus durable et plus flexible, suivez [ces instructions](http://kb.tableau.com/articles/knowledgebase/r-implementation-notes?lang=fr-fr).
 
