@@ -157,7 +157,7 @@ gText <- ggplot() +
 
 # scatterplot with LOESS smooth line
 g1 <- ggplot(graphData, aes(x=axisX, y=axisY, colour=factor(colDim))) +
-      geom_point(alpha=0.4, size=2) + 
+      geom_point(alpha=0.4, size=1.5) + 
       geom_smooth(aes(x=axisX, y=axisY), 
                   inherit.aes=FALSE, method="loess") +
       scale_x_continuous(expand=c(0.01, 0.01)) +
@@ -200,13 +200,13 @@ La première étape est de se connecter aux données (fichier _insertion_Tableau
 
 D'abord, n'oublier pas de désactiver l'agrégation dans _Analyse_ $\rightarrow$ _Agréger les mesures_. Ensuite, le premier réflexe est de dynamiser notre vue en créant un certain nombre de paramètres, ainsi que les champs paramétrables correspondants. Faites _clique-droit_ $\rightarrow$ _modifier_ pour comprendre comment ils sont construits. Pour le nuage de points, nous avons donc :  
 
-* le paramètre _Abscisse_ qui commande le champ _X_  
-* le paramètre _Ordonnée_ qui commande le champ _Y_  
-* les paramètres _Niveaux_ et _Niveaux maximum_ qui commandent les champs _Niveaux pour couleur_ et _Couleur_  
+* le paramètre __Abscisse__ qui commande le champ __X__  
+* le paramètre __Ordonnée__ qui commande le champ __Y__  
+* les paramètres __Niveaux__ et __Niveaux maximum__ qui commandent les champs __Niveaux pour couleur__ et __Couleur__  
 
-Grâce aux deux premiers paramètres, je peux choisir les mesures que je souhaite placer en abscisse et en ordonnée. Quelques précisions s'imposent pour le dernier point. Grâce à _Niveaux_, je peux choisir une dimension pour déterminer la couleur des points (via le champ _Niveaux pour couleur_). Cependant je ne contrôle pas le nombre de niveaux que contient cette dimension ! Par sécurité, je créé un nouveau couple paramètre / champ calculé (_Niveaux maximum_ et _Couleur_) qui va me permettre de n'afficher des couleurs que si le nombre de niveaux ne dépasse pas un certain seuil. C'est donc le champ _Couleur_ que je place sur mon repère des couleurs. En revanche, je peux utiliser le champ _Niveaux pour couleur_ pour filtrer ma dimension. Ainsi, bien qu'il y ait 28 niveaux pour la dimension _Académie_, si je la sélectionne puis que je filtre pour ne garder que 6 niveaux (et que _Niveaux maximum_ est fixé à 6), les académies que j'ai sélectionné vont bel et bien s'afficher en couleur. En revanche si j'ajoute une académie de trop à ma sélection, Tableau repasse sur une couleur unique.  
+Grâce aux deux premiers paramètres, je peux choisir les mesures que je souhaite placer en abscisse et en ordonnée. Quelques précisions s'imposent pour le dernier point. Grâce à __Niveaux__, je peux choisir une dimension pour déterminer la couleur des points (via le champ __Niveaux pour couleur__). Cependant je ne contrôle pas le nombre de niveaux que contient cette dimension ! Par sécurité, je créé un nouveau couple paramètre / champ calculé (__Niveaux maximum__ et __Couleur__) qui va me permettre de n'afficher des couleurs que si le nombre de niveaux ne dépasse pas un certain seuil. C'est donc le champ __Couleur__ que je place sur mon repère des couleurs. En revanche, je peux utiliser le champ __Niveaux pour couleur__ pour filtrer ma dimension. Ainsi, bien qu'il y ait 28 niveaux pour la dimension __Académie__, si je la sélectionne puis que je filtre pour ne garder que 6 niveaux (et que __Niveaux maximum__ est fixé à 6), les académies que j'ai sélectionné vont bel et bien s'afficher en couleur. En revanche si j'ajoute une académie de trop à ma sélection, Tableau repasse sur une couleur unique.  
 
-Les paramètres _Abscisse_ et _Ordonnée_ sont respectivement placés en colonne et en ligne pour faire office de titre d'axe. Je filtre également mes champs _X_ et _Y_ pour exclure les cas où les valeur sont manquantes.  
+Les paramètres __Abscisse__ et __Ordonnée__ sont respectivement placés en colonne et en ligne pour faire office de titre d'axe. Je filtre également mes champs __X__ et __Y__ pour exclure les cas où les valeur sont manquantes.  
 
 ![Nuage de points dynamique dans Tableau](figures/nuage_de_points.png)
 
