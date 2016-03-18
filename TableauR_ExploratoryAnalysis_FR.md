@@ -191,6 +191,7 @@ grid.arrange(arrangeGrob(g2, gText, ncol=2, widths=c(3, 1)),
 
 <img src="TableauR_ExploratoryAnalysis_FR_files/figure-html/scatterMargins-1.png" title="" alt="" style="display: block; margin: auto;" />
 <br>  
+
 Bien entendu ce code pourrait être largement amélioré (ajout de la légende, alignement dynamique des différents éléments, etc.) mais vous avez compris le problème : c'est difficile à maintenir, et surtout cela manque cruellement d’interactivité. Je peux changer mes variables, mais pour cela je dois modifier puis relancer mon code. De plus, je ne suis pas sûr que l'alignement de mes graphiques restera bon. Je n'ai pas non plus la possibilité d'ajouter des infobulles ni de filtrer mes données... Bref, et si l'on essayait de porter tout cela dans Tableau ?  
 <br>  
 
@@ -208,5 +209,116 @@ Grâce aux deux premiers paramètres, je peux choisir les mesures que je souhait
 
 Les paramètres __Abscisse__ et __Ordonnée__ sont respectivement placés en colonne et en ligne pour faire office de titre d'axe. Je filtre également mes champs __X__ et __Y__ pour exclure les cas où les valeur sont manquantes.  
 
-![Nuage de points dynamique dans Tableau](figures/nuage_de_points.png)
+![Nuage de points dynamique dans Tableau](figures/nuage_de_points.png)  
+<br>  
+
+Passons à la courbe de tendance. Tableau propose déjà une solution, cependant l'idéal serait de pouvoir ajouter d'autres possibilités, comme la régression LOESS par exemple. Pour cela on va utiliser un paramètre permettant de choisir le type de modèle, et un script R pour réaliser les calculs. Dans cet exemple, je propose une régression LOESS (ou [GAM](https://en.wikipedia.org/wiki/Generalized_additive_model) s'il y a plus de 1500 points), ou une régression linéaire (modèle simple, logarithmique, ou polynomial de degré 2, 3 ou 4). Le paramètre se nomme __Type de modèle__.  
+
+Notons deux points pour cette section. D'abord, je ne prends pas en compte les niveaux de la dimension qui détermine la couleur : on souhaite afficher une seule courbe de tendance afin de ne pas surcharger le graphique, un modèle simple fera l'affaire. Ensuite, je souhaite non seulement obtenir la courbe de tendance, mais aussi un intervalle de confiance (95%). Je souhaite également obtenir des indicateurs sur la qualité de la régression. Pour éviter de faire appel plusieurs fois à R, je concatène tous les résultats dans un seul champ de type chaîne de caractère que je pourrai ensuite parser dans Tableau.  
+
+Le format final est donc : _lower___<___fit___>___upper___|1|___Residual standard error___|2|___Multiple R-squared___|3|___Adjusted R-squared___|4|___F-test p-value_  
+
+```r
+# set variables
+x <- insertion$femmes
+y <- insertion$salaire_net_median_des_emplois_a_temps_plein
+modelType <- "loess/gam" # as an example
+confLvl <- 0.95 # confidence interval
+loessLimit <- 1500 # n limit for computing LOESS
+
+# remove missing values (do this with filters in Tableau)
+complete <- complete.cases(x, y)
+x <- x[complete]
+y <- y[complete]
+
+# choose model
+if(modelType == "loess/gam") {
+      if(length(x) <= loessLimit) {
+            model <- loess(y ~ x)
+            pred <- predict(model, se=TRUE)
+            trendLine <- paste0(
+                  formatC(pred$fit - (qt(1 - (1 - confLvl) / 2, pred$df) * pred$se), digits=5, format="f"), "<",
+                  formatC(pred$fit, digits=5, format="f"), ">",
+                  formatC(pred$fit + (qt(1 - (1 - confLvl) / 2, pred$df) * pred$se), digits=5, format="f")
+            )
+            SSE <- sum((y - pred$fit)^2) # sum of squares for error
+            SST <- sum((y - mean(y))^2) # sum of squares total
+            SSM <- sum((pred$fit - mean(y))^2) # sum of squares for model
+            DFE <- pred$df # effective degrees of freedom
+            r.squared <- 1 - (SSE / SST)
+            adj.r.squared <- r.squared - (1 - r.squared) * (1 / (DFE - 1))
+            fStat <- (SSM/1) / (SSE/DFE) # F-test
+            pValue <- pf(fStat, 1, DFE, lower.tail=FALSE)
+      } else {
+            if (!require("mgcv")) {
+                  install.packages("mgcv")
+                  library(mgcv)
+            }
+            model <- gam(y ~ ti(x))
+            pred <- predict(model, se.fit=TRUE)
+            DFE <- length(y) - 1 # degrees of freedom
+            trendLine <- paste0(
+                  formatC(pred$fit - (qt(1 - (1 - confLvl) / 2, DFE) * pred$se.fit), digits=5, format="f"), "<",
+                  formatC(pred$fit, digits=5, format="f"), ">",
+                  formatC(pred$fit + (qt(1 - (1 - confLvl) / 2, DFE) * pred$se.fit), digits=5, format="f")
+            )
+            SSE <- sum((y - pred$fit)^2) # sum of squares for error
+            SST <- sum((y - mean(y))^2) # sum of squares total
+            SSM <- sum((pred$fit - mean(y))^2) # sum of squares for model
+            r.squared <- 1 - (SSE / SST)
+            adj.r.squared <- r.squared - (1 - r.squared) * (1 / (DFE - 1))
+            fStat <- (SSM/1) / (SSE/DFE) # F-test
+            pValue <- pf(fStat, 1, DFE, lower.tail=FALSE)
+      }
+            modelSummary <- paste0(
+            "|1|Residual standard error: ", formatC(pred$residual.scale, digits=1, format="f"), 
+            " on ", formatC(pred$df, digits=1, format="f"), " degrees of freedom", 
+            "|2|Multiple R-squared: ",  formatC(r.squared, digits=4, format="f"),
+            "|3|Adjusted R-squared: ",  formatC(adj.r.squared, digits=4, format="f"),
+            "|4|F-test p-value: ",  formatC(pValue, digits=4, format="e")
+      )
+      paste0(trendLine, modelSummary)
+} else if(substr(modelType, 1, 2) == "lm") {
+      lm_formula <- if(modelType == "lm") {
+            y ~ x
+      } else if(substr(modelType, 4, 6) == "log") {
+            y ~ log(x)
+      } else if(substr(modelType, 4, 6) == "pol") {
+            degree <- as.numeric(substr(modelType, 8, 8))
+            if(degree == 2) {
+                 y ~ x + I(x^2) 
+            } else if(degree == 3) {
+                 y ~ x + I(x^2) + I(x^3) 
+            } else if(degree == 4) {
+                 y ~ x + I(x^2) + I(x^3) + I(x^4)
+            }
+      }
+      model <- lm(lm_formula)
+      pred <- predict(model, interval="confidence", level=confLvl)
+      trendLine <- paste0(
+            formatC(pred[, "lwr"], digits=5, format="f"), "<",
+            formatC(pred[, "fit"], digits=5, format="f"), ">",
+            formatC(pred[, "upr"], digits=5, format="f")
+      )
+      mSum <- summary(model)
+      modelSummary <- paste0(
+            "|1|Residual standard error: ", formatC(mSum$sigma, digits=1, format="f"), 
+            " on ", mSum$df[2], " degrees of freedom", 
+            "|2|Multiple R-squared: ",  formatC(mSum$r.squared, digits=4, format="f"),
+            "|3|Adjusted R-squared: ",  formatC(mSum$adj.r.squared, digits=4, format="f"),
+            "|4|F-test p-value: ",  formatC(
+                  pf(mSum$fstatistic[1], mSum$fstatistic[2], mSum$fstatistic[3], lower.tail=FALSE), 
+                  digits=4, format="e")
+      )
+      paste0(trendLine, modelSummary)
+}
+```
+<br>  
+
+Quelques modifications minimes permettent d'interfacer ce code dans Tableau (champ __Script R : courbe de tendance__) en utilisant la fonction _SCRIPT_STR_. Il faut ensuite parser ce champ pour obtenir les différents éléments :  
+
+* le champ __lwr__ pour la limite basse de la courbe de tendance  
+* le champ __fit__ pour la courbe de tendance
+* le champ __upr__ pour la limite haute de la courbe de tendance
+* le champ __summary__ pour les détails du modèle
 
