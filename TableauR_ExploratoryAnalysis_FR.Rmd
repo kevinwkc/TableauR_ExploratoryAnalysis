@@ -105,9 +105,9 @@ pacman::p_load(ggplot2, gridExtra)
 
 # set variables
 graphData <- data.frame(
-      axisX = insertion$femmes,
-      axisY = insertion$salaire_net_median_des_emplois_a_temps_plein, 
-      colDim = insertion$domaine
+      axisX=insertion$femmes,
+      axisY=insertion$salaire_net_median_des_emplois_a_temps_plein, 
+      colDim=insertion$domaine
       )
 graphData <- graphData[complete.cases(graphData),]
 axisNames <- c("Pourcentage de femmes", "Salaire net médian")
@@ -128,7 +128,7 @@ myTheme <- function(...) theme(legend.position="none",
 # plotting Pearson's correlation test
 corTest <- with(graphData, cor.test(axisX, axisY, method="pearson"))
 corText <- paste0("Pearson's r: ", formatC(corTest$estimate, digits=4, format="f"), 
-                  "\nP value: ", formatC(corTest$p.value, digits=4, format="e"))
+                  "\np value: ", formatC(corTest$p.value, digits=4, format="e"))
 gText <- ggplot() + 
   annotate("text", x=0, y=0, size=4, label=corText) + 
   theme_bw() + myTheme()
