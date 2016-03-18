@@ -117,16 +117,25 @@ str(insertion)
 ### Nuage de points et densitées marginales
 L'un de mes premiers réflexes lorsque j'explore un nouveau jeu de données est de rechercher des relation entre les différentes variables. Pour les variables quantitatives, le nuage de point est un incontournable. Sur ce type de graphique, j'ai également tendance à utiliser la couleur pour comparer les différents niveaux d'une variable qualitative (ou dimension).  
 
-Le problème avec les nuages de points, c'est qu'ils ont tendance à devenir rapidement illisibles lorsqu'il y a beaucoup d'éléments à afficher. Il est donc intéressant d'enrichir ces vues. On peut ainsi y ajouter différents éléments : une courbe de tendance, le résultat d'un test statistique, ou encore les densitées marginales des nos variables...  
+Le problème avec les nuages de points, c'est qu'ils ont tendance à devenir rapidement illisibles lorsqu'il y a beaucoup d'éléments à afficher. Il est donc intéressant d'enrichir ces vues. On peut ainsi y ajouter différents éléments : une courbe de tendance, le résultat d'un test statistique, ou encore les densités marginales des nos variables...  
 
-Ci-dessous une petite démonstration rapide en R avec le package _ggplot2_. J'ai ajouté une courbe de régression [LOESS](https://en.wikipedia.org/wiki/Local_regression), le résultat d'un [test de corrélation de Pearson](https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient) ainsi que les [distributions marginales](https://en.wikipedia.org/wiki/Marginal_distribution) déclinées en couleur sur les différents domaines d'études proposés par nos universités. C'est une démonstration rapide, je n'ai donc pas pris la paine d'afficher la légende. Vous remarquerez aussi que cela demande beaucoup de code, et que l'alignement des différents éléments est assez approximatif.  
+Ci-dessous une petite démonstration rapide en R avec le package _ggplot2_. J'ai ajouté une courbe de régression [LOESS](https://en.wikipedia.org/wiki/Local_regression), le résultat d'un [test de corrélation de Pearson](https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient) ainsi que les [distributions marginales](https://en.wikipedia.org/wiki/Marginal_distribution) déclinées en couleur sur les différents domaines d'études proposés par nos universités. C'est une démonstration rapide, je n'ai donc pas pris la peine d'afficher la légende. Vous remarquerez aussi que cela demande beaucoup de code, et que l'alignement des différents éléments est assez approximatif.  
 
 ```r
 # load packages for graphics
 pacman::p_load(ggplot2, gridExtra)
 
+# set variables
+graphData <- data.frame(
+      axisX = insertion$femmes,
+      axisY = insertion$salaire_net_median_des_emplois_a_temps_plein, 
+      colDim = insertion$domaine
+      )
+graphData <- graphData[complete.cases(graphData),]
+axisNames <- c("Pourcentage de femmes", "Salaire net médian")
+
 # helper function for graphic themes
-myTheme <- function(...) theme( legend.position="none", 
+myTheme <- function(...) theme(legend.position="none", 
                                panel.background=element_blank(), 
                                panel.grid.major=element_blank(), 
                                panel.grid.minor=element_blank(), 
@@ -139,8 +148,7 @@ myTheme <- function(...) theme( legend.position="none",
                                panel.border=element_rect(color=NA), ...)
 
 # plotting Pearson's correlation test
-corTest <- with(insertion, cor.test(femmes, salaire_net_median_des_emplois_a_temps_plein, 
-                                    method="pearson"))
+corTest <- with(graphData, cor.test(axisX, axisY, method="pearson"))
 corText <- paste0("Pearson's r: ", formatC(corTest$estimate, digits=4, format="f"), 
                   "\nP value: ", formatC(corTest$p.value, digits=4, format="e"))
 gText <- ggplot() + 
@@ -148,40 +156,40 @@ gText <- ggplot() +
   theme_bw() + myTheme()
 
 # scatterplot with LOESS smooth line
-g1 <- ggplot(insertion, aes(x=femmes, y=salaire_net_median_des_emplois_a_temps_plein, 
-                           colour=factor(domaine))) +
+g1 <- ggplot(graphData, aes(x=axisX, y=axisY, colour=factor(colDim))) +
       geom_point(alpha=0.4, size=2) + 
-      geom_smooth(aes(x=femmes, y=salaire_net_median_des_emplois_a_temps_plein), 
+      geom_smooth(aes(x=axisX, y=axisY), 
                   inherit.aes=FALSE, method="loess") +
-      scale_x_continuous(expand=c(0.02, 0)) +
-      scale_y_continuous(expand=c(0.02, 0)) +
-      theme_bw() + xlab("Pourcentage de femmes") + ylab("Salaire net médian") +
+      scale_x_continuous(expand=c(0.01, 0.01)) +
+      scale_y_continuous(expand=c(0.01, 0.01)) +
+      theme_bw() + xlab(axisNames[1]) + ylab(axisNames[2]) +
       theme(legend.position="none", plot.margin=unit(c(1, 1, 1, 1), "points"))
 
 # x marginal density
-g2 <- ggplot(insertion, aes(x=femmes, colour=factor(domaine), fill=factor(domaine))) + 
+g2 <- ggplot(graphData, aes(x=axisX, colour=factor(colDim), fill=factor(colDim))) + 
   geom_density(alpha=0.4) + 
-  scale_x_continuous(breaks=NULL, expand=c(0.02, 0)) +
-  scale_y_continuous(breaks=NULL, expand=c(0.02, 0)) +
+  scale_x_continuous(breaks=NULL, expand=c(0.01, 0.01)) +
+  scale_y_continuous(breaks=NULL, expand=c(0, 0)) +
   theme_bw() +
-  myTheme(plot.margin=unit(c(0, -0.55, 0, 2.5), "lines")) 
+  myTheme(plot.margin=unit(c(0, 0, 0, 3), "lines")) 
 
 # y marginal density
-g3 <- ggplot(insertion, aes(x=salaire_net_median_des_emplois_a_temps_plein
-                           , colour=factor(domaine), fill=factor(domaine))) + 
+g3 <- ggplot(graphData, aes(x=axisY, colour=factor(colDim), fill=factor(colDim))) + 
   geom_density(alpha=0.4) + 
   coord_flip()  + 
-  scale_x_continuous(labels=NULL, breaks=NULL, expand=c(0.02, 0)) +
-  scale_y_continuous(labels=NULL, breaks=NULL, expand=c(0.02, 0)) +
+  scale_x_continuous(labels=NULL, breaks=NULL, expand=c(0.01, 0.01)) +
+  scale_y_continuous(labels=NULL, breaks=NULL, expand=c(0, 0)) +
   theme_bw() +
-  myTheme(plot.margin=unit(c(-0.3, 0, 1.85, 0), "lines"))
+  myTheme(plot.margin=unit(c(0, 0, 2.1, 0), "lines"))
 
 # arrange plots
+remove(graphData, axisNames)
 grid.arrange(arrangeGrob(g2, gText, ncol=2, widths=c(3, 1)), 
              arrangeGrob(g1, g3, ncol=2, widths=c(3, 1)), 
              heights=c(1, 3))
 ```
 
 <img src="TableauR_ExploratoryAnalysis_FR_files/figure-html/scatterMargins-1.png" title="" alt="" style="display: block; margin: auto;" />
-
+<br>  
+Bien entendu ce code pourrait être grandement amélioré (ajout de la légende, alignement dynamique des différents éléments, etc.) mais vous avez compris le problème : c'est difficile à maintenir, et surtout cela manque cruellement d’interactivité. Je peux changer mes variables, mais pour cela je dois modifier puis relancer mon code. De plus, je ne suis pas sûr que l'alignement de mes graphiques restera bon. Je n'ai pas non plus la possibilité d'ajouter des infobulles ni de filtrer mes données... Bref, et si l'on essayait de porter tout cela dans Tableau ?
 
