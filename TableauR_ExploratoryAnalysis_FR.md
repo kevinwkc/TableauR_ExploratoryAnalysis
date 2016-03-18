@@ -19,7 +19,7 @@ Si vous souhaitez reproduire cet outil, assurez-vous de remplir les prérequis s
 * avoir installé une version de Tableau Desktop supportant l'intégration avec R (8.1 ou supérieure)  
       + vous pouvez vous procurer une version d'essai à [cette adresse](http://get.tableau.com/fr-fr/partner-trial.html?partner=29294)  
 * avoir installé R version 3.0.2 ou supérieure (disponible [ici](https://www.r-project.org/))  
-* avoir ajouté R à votre variable d'environnement _path_ (par exemple, "C:\\Program Files\\R\\R-3.0.2\\bin\\x64")  
+* avoir ajouté R à votre variable d'environnement _path_ (par exemple, "_C:\\Program Files\\R\\R-3.0.2\\bin\\x64_")  
 * avoir lancé Rserve en tâche d'arrière plan  
       + pour une configuration rapide et suffisante dans notre cas, téléchargez le contenu du [répertoire Github](https://github.com/simonkth/TableauR_ExploratoryAnalysis) et double-cliquez sur _Rserve.cmd_ dans le dossier _Rserve_ (ne fermez pas la fenêtre qui s'ouvre)  
       + pour une installation plus durable et plus flexible, suivez [ces instructions](http://kb.tableau.com/articles/knowledgebase/r-implementation-notes?lang=fr-fr)  
@@ -119,7 +119,7 @@ L'un de mes premiers réflexes lorsque j'explore un nouveau jeu de données est 
 
 Le problème avec les nuages de points, c'est qu'ils ont tendance à devenir rapidement illisibles lorsqu'il y a beaucoup d'éléments à afficher. Il est donc intéressant d'enrichir ces vues. On peut ainsi y ajouter différents éléments : une courbe de tendance, le résultat d'un test statistique, ou encore les densités marginales des nos variables...  
 
-Ci-dessous une petite démonstration rapide en R avec le package _ggplot2_. J'ai ajouté une courbe de régression [LOESS](https://en.wikipedia.org/wiki/Local_regression), le résultat d'un [test de corrélation de Pearson](https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient) ainsi que les [distributions marginales](https://en.wikipedia.org/wiki/Marginal_distribution) déclinées en couleur sur les différents domaines d'études proposés par nos universités. C'est une démonstration rapide, je n'ai donc pas pris la peine d'afficher la légende. Vous remarquerez aussi que cela demande beaucoup de code, et que l'alignement des différents éléments est assez approximatif.  
+Ci-dessous une petite démonstration rapide en R avec le package _ggplot2_. J'ai ajouté une courbe de régression [LOESS](https://en.wikipedia.org/wiki/Local_regression), le résultat d'un [test de corrélation de Pearson](https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient) ainsi que les [distributions marginales](https://en.wikipedia.org/wiki/Marginal_distribution) déclinées en couleur sur les différents domaines d'études proposés par nos universités. C'est une démonstration rapide, je n'ai donc pas pris la peine d'afficher la légende. Vous remarquerez aussi que cela demande beaucoup de code, et que l'alignement des différents éléments reste assez approximatif.  
 
 ```r
 # load packages for graphics
@@ -191,5 +191,22 @@ grid.arrange(arrangeGrob(g2, gText, ncol=2, widths=c(3, 1)),
 
 <img src="TableauR_ExploratoryAnalysis_FR_files/figure-html/scatterMargins-1.png" title="" alt="" style="display: block; margin: auto;" />
 <br>  
-Bien entendu ce code pourrait être grandement amélioré (ajout de la légende, alignement dynamique des différents éléments, etc.) mais vous avez compris le problème : c'est difficile à maintenir, et surtout cela manque cruellement d’interactivité. Je peux changer mes variables, mais pour cela je dois modifier puis relancer mon code. De plus, je ne suis pas sûr que l'alignement de mes graphiques restera bon. Je n'ai pas non plus la possibilité d'ajouter des infobulles ni de filtrer mes données... Bref, et si l'on essayait de porter tout cela dans Tableau ?
+Bien entendu ce code pourrait être largement amélioré (ajout de la légende, alignement dynamique des différents éléments, etc.) mais vous avez compris le problème : c'est difficile à maintenir, et surtout cela manque cruellement d’interactivité. Je peux changer mes variables, mais pour cela je dois modifier puis relancer mon code. De plus, je ne suis pas sûr que l'alignement de mes graphiques restera bon. Je n'ai pas non plus la possibilité d'ajouter des infobulles ni de filtrer mes données... Bref, et si l'on essayait de porter tout cela dans Tableau ?  
+<br>  
+
+Vous trouverez le classeur Tableau dans le [répertoire Github](https://github.com/simonkth/TableauR_ExploratoryAnalysis) (_TableauR_ExploratoryAnalysis_FR.twb_). Je ne vais pas détailler tous les champs calculés, aussi je vous conseille de travailler avec deux fenêtres de Tableau. Dans la première, ouvrez mon classeur et jetez y un coup d’œil de temps en temps pour voir comment je m'y suis pris. Dans la deuxième, ouvrez un classeur vierge et recommencez à partir de zéro.  
+
+La première étape est de se connecter aux données (fichier _insertion_Tableau.csv_). N'hésitez pas à renommer les champs et à formater correctement les mesures, comme je l'ai fait. Puis nous passons au premier élément, le nuage de points.  
+
+D'abord, n'oublier pas de désactiver l'agrégation dans _Analyse_ $\rightarrow$ _Agréger les mesures_. Ensuite, le premier réflexe est de dynamiser notre vue en créant un certain nombre de paramètres, ainsi que les champs paramétrables correspondants. Faites _clique-droit_ $\rightarrow$ _modifier_ pour comprendre comment ils sont construits. Pour le nuage de points, nous avons donc :  
+
+* le paramètre _Abscisse_ qui commande le champ _X_  
+* le paramètre _Ordonnée_ qui commande le champ _Y_  
+* les paramètres _Niveaux_ et _Niveaux maximum_ qui commandent les champs _Niveaux pour couleur_ et _Couleur_  
+
+Grâce aux deux premiers paramètres, je peux choisir les mesures que je souhaite placer en abscisse et en ordonnée. Quelques précisions s'imposent pour le dernier point. Grâce à _Niveaux_, je peux choisir une dimension pour déterminer la couleur des points (via le champ _Niveaux pour couleur_). Cependant je ne contrôle pas le nombre de niveaux que contient cette dimension ! Par sécurité, je créé un nouveau couple paramètre / champ calculé (_Niveaux maximum_ et _Couleur_) qui va me permettre de n'afficher des couleurs que si le nombre de niveaux ne dépasse pas un certain seuil. C'est donc le champ _Couleur_ que je place sur mon repère des couleurs. En revanche, je peux utiliser le champ _Niveaux pour couleur_ pour filtrer ma dimension. Ainsi, bien qu'il y ait 28 niveaux pour la dimension _Académie_, si je la sélectionne puis que je filtre pour ne garder que 6 niveaux (et que _Niveaux maximum_ est fixé à 6), les académies que j'ai sélectionné vont bel et bien s'afficher en couleur. En revanche si j'ajoute une académie de trop à ma sélection, Tableau repasse sur une couleur unique.  
+
+Les paramètres _Abscisse_ et _Ordonnée_ sont respectivement placés en colonne et en ligne pour faire office de titre d'axe. Je filtre également mes champs _X_ et _Y_ pour exclure les cas où les valeur sont manquantes.  
+
+![Nuage de points dynamique dans Tableau](figures/nuage_de_points.png)
 

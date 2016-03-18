@@ -1,0 +1,1117 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 9200.16.0303.2316                                -->
+<workbook locale='fr_FR' source-platform='win' version='9.2' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource caption='insertion_Tableau' inline='true' name='textscan.033rnfa0qr6jju119agoc1gq4wqi' version='9.2'>
+      <connection class='textscan' directory='C:/Users/SimonKEITH/Documents/Training/Tableau/Travaux/TableauR_ExploratoryAnalysis/data' filename='insertion_Tableau.csv' password='' server='' username=''>
+        <relation name='insertion_Tableau#csv' table='[insertion_Tableau#csv]' type='table'>
+          <columns character-set='windows-1252' header='yes' locale='en_US' separator=','>
+            <column datatype='integer' name='annee' ordinal='0' />
+            <column datatype='string' name='etablissement' ordinal='1' />
+            <column datatype='string' name='academie' ordinal='2' />
+            <column datatype='string' name='domaine' ordinal='3' />
+            <column datatype='string' name='discipline' ordinal='4' />
+            <column datatype='string' name='situation' ordinal='5' />
+            <column datatype='integer' name='nombre_de_reponses' ordinal='6' />
+            <column datatype='integer' name='taux_de_reponse' ordinal='7' />
+            <column datatype='integer' name='poids_de_la_discipline' ordinal='8' />
+            <column datatype='integer' name='taux_dinsertion' ordinal='9' />
+            <column datatype='integer' name='emplois_cadre_ou_professions_intermediaires' ordinal='10' />
+            <column datatype='integer' name='emplois_stables' ordinal='11' />
+            <column datatype='integer' name='emplois_a_temps_plein' ordinal='12' />
+            <column datatype='integer' name='salaire_net_median_des_emplois_a_temps_plein' ordinal='13' />
+            <column datatype='integer' name='salaire_brut_annuel_estime' ordinal='14' />
+            <column datatype='integer' name='de_diplomes_boursiers' ordinal='15' />
+            <column datatype='real' name='taux_de_chomage_regional' ordinal='16' />
+            <column datatype='integer' name='salaire_net_mensuel_median_regional' ordinal='17' />
+            <column datatype='integer' name='emplois_cadre' ordinal='18' />
+            <column datatype='integer' name='emplois_exterieurs_a_la_region_de_luniversite' ordinal='19' />
+            <column datatype='integer' name='femmes' ordinal='20' />
+            <column datatype='integer' name='salaire_net_mensuel_regional_1er_quartile' ordinal='21' />
+            <column datatype='integer' name='salaire_net_mensuel_regional_3eme_quartile' ordinal='22' />
+          </columns>
+        </relation>
+        <metadata-records>
+          <metadata-record class='column'>
+            <remote-name>annee</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[annee]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>annee</remote-alias>
+            <ordinal>0</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>etablissement</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[etablissement]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>etablissement</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>academie</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[academie]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>academie</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>domaine</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[domaine]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>domaine</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>discipline</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[discipline]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>discipline</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>situation</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[situation]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>situation</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>nombre_de_reponses</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[nombre_de_reponses]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>nombre_de_reponses</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>taux_de_reponse</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[taux_de_reponse]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>taux_de_reponse</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>poids_de_la_discipline</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[poids_de_la_discipline]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>poids_de_la_discipline</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>taux_dinsertion</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[taux_dinsertion]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>taux_dinsertion</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>emplois_cadre_ou_professions_intermediaires</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[emplois_cadre_ou_professions_intermediaires]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>emplois_cadre_ou_professions_intermediaires</remote-alias>
+            <ordinal>10</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>emplois_stables</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[emplois_stables]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>emplois_stables</remote-alias>
+            <ordinal>11</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>emplois_a_temps_plein</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[emplois_a_temps_plein]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>emplois_a_temps_plein</remote-alias>
+            <ordinal>12</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>salaire_net_median_des_emplois_a_temps_plein</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[salaire_net_median_des_emplois_a_temps_plein]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>salaire_net_median_des_emplois_a_temps_plein</remote-alias>
+            <ordinal>13</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>salaire_brut_annuel_estime</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[salaire_brut_annuel_estime]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>salaire_brut_annuel_estime</remote-alias>
+            <ordinal>14</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>de_diplomes_boursiers</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[de_diplomes_boursiers]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>de_diplomes_boursiers</remote-alias>
+            <ordinal>15</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>taux_de_chomage_regional</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[taux_de_chomage_regional]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>taux_de_chomage_regional</remote-alias>
+            <ordinal>16</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;double&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>salaire_net_mensuel_median_regional</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[salaire_net_mensuel_median_regional]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>salaire_net_mensuel_median_regional</remote-alias>
+            <ordinal>17</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>emplois_cadre</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[emplois_cadre]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>emplois_cadre</remote-alias>
+            <ordinal>18</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>emplois_exterieurs_a_la_region_de_luniversite</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[emplois_exterieurs_a_la_region_de_luniversite]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>emplois_exterieurs_a_la_region_de_luniversite</remote-alias>
+            <ordinal>19</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>femmes</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[femmes]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>femmes</remote-alias>
+            <ordinal>20</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>salaire_net_mensuel_regional_1er_quartile</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[salaire_net_mensuel_regional_1er_quartile]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>salaire_net_mensuel_regional_1er_quartile</remote-alias>
+            <ordinal>21</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>salaire_net_mensuel_regional_3eme_quartile</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[salaire_net_mensuel_regional_3eme_quartile]</local-name>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias>salaire_net_mensuel_regional_3eme_quartile</remote-alias>
+            <ordinal>22</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[insertion_Tableau#csv]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='character-set'>&quot;windows-1252&quot;</attribute>
+              <attribute datatype='string' name='collation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='field-delimiter'>&quot;,&quot;</attribute>
+              <attribute datatype='string' name='header-row'>&quot;true&quot;</attribute>
+              <attribute datatype='string' name='locale'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='single-char'>&quot;&quot;</attribute>
+            </attributes>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column caption='X' datatype='real' name='[Calculation_673851157565521921]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='CASE [Parameters].[Paramètre 1]&#13;&#10;WHEN &quot;% boursiers&quot; THEN [de_diplomes_boursiers] &#13;&#10;WHEN &quot;% cadres&quot; THEN [emplois_cadre] &#13;&#10;WHEN &quot;% cadres ou intermédiaires&quot; THEN [emplois_cadre_ou_professions_intermediaires] &#13;&#10;WHEN &quot;% emplois hors région&quot; THEN [emplois_exterieurs_a_la_region_de_luniversite] &#13;&#10;WHEN &quot;% emplois stables&quot; THEN [emplois_stables] &#13;&#10;WHEN &quot;% emplois temps plein&quot; THEN [emplois_a_temps_plein] &#13;&#10;WHEN &quot;% femmes&quot; THEN [femmes] &#13;&#10;WHEN &quot;Nombre de réponses&quot; THEN [nombre_de_reponses] &#13;&#10;WHEN &quot;Poids de la discipline&quot; THEN [poids_de_la_discipline] &#13;&#10;WHEN &quot;Salaire brut annuel (estimé)&quot; THEN [salaire_brut_annuel_estime] &#13;&#10;WHEN &quot;Salaire net mensuel médian&quot; THEN [salaire_net_median_des_emplois_a_temps_plein] &#13;&#10;WHEN &quot;Salaire net mensuel régional - Q1&quot; THEN [salaire_net_mensuel_regional_1er_quartile] &#13;&#10;WHEN &quot;Salaire net mensuel régional - Q2 (médiane)&quot; THEN [salaire_net_mensuel_median_regional] &#13;&#10;WHEN &quot;Salaire net mensuel régional - Q3&quot; THEN [salaire_net_mensuel_regional_3eme_quartile] &#13;&#10;WHEN &quot;Taux d&apos;insertion&quot; THEN [taux_dinsertion] &#13;&#10;WHEN &quot;Taux de chômage régional&quot; THEN [taux_de_chomage_regional] &#13;&#10;WHEN &quot;Taux de réponse&quot; THEN [taux_de_reponse] &#13;&#10;END' />
+      </column>
+      <column caption='Y' datatype='real' name='[Calculation_673851157565718530]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='CASE [Parameters].[Abscisse (copie)]&#13;&#10;WHEN &quot;% boursiers&quot; THEN [de_diplomes_boursiers] &#13;&#10;WHEN &quot;% cadres&quot; THEN [emplois_cadre] &#13;&#10;WHEN &quot;% cadres ou intermédiaires&quot; THEN [emplois_cadre_ou_professions_intermediaires] &#13;&#10;WHEN &quot;% emplois hors région&quot; THEN [emplois_exterieurs_a_la_region_de_luniversite] &#13;&#10;WHEN &quot;% emplois stables&quot; THEN [emplois_stables] &#13;&#10;WHEN &quot;% emplois temps plein&quot; THEN [emplois_a_temps_plein] &#13;&#10;WHEN &quot;% femmes&quot; THEN [femmes] &#13;&#10;WHEN &quot;Nombre de réponses&quot; THEN [nombre_de_reponses] &#13;&#10;WHEN &quot;Poids de la discipline&quot; THEN [poids_de_la_discipline] &#13;&#10;WHEN &quot;Salaire brut annuel (estimé)&quot; THEN [salaire_brut_annuel_estime] &#13;&#10;WHEN &quot;Salaire net mensuel médian&quot; THEN [salaire_net_median_des_emplois_a_temps_plein] &#13;&#10;WHEN &quot;Salaire net mensuel régional - Q1&quot; THEN [salaire_net_mensuel_regional_1er_quartile] &#13;&#10;WHEN &quot;Salaire net mensuel régional - Q2 (médiane)&quot; THEN [salaire_net_mensuel_median_regional] &#13;&#10;WHEN &quot;Salaire net mensuel régional - Q3&quot; THEN [salaire_net_mensuel_regional_3eme_quartile] &#13;&#10;WHEN &quot;Taux d&apos;insertion&quot; THEN [taux_dinsertion] &#13;&#10;WHEN &quot;Taux de chômage régional&quot; THEN [taux_de_chomage_regional] &#13;&#10;WHEN &quot;Taux de réponse&quot; THEN [taux_de_reponse] &#13;&#10;END' />
+      </column>
+      <column caption='Niveaux pour couleur' datatype='string' name='[Calculation_673851157567737861]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='CASE [Parameters].[Paramètre 2]&#13;&#10;WHEN &quot;Aucun&quot; THEN &quot;Aucun&quot; &#13;&#10;WHEN &quot;Académie&quot; THEN [academie] &#13;&#10;WHEN &quot;Année&quot; THEN STR([annee]) &#13;&#10;WHEN &quot;Discipline&quot; THEN [discipline] &#13;&#10;WHEN &quot;Domaine&quot; THEN [domaine] &#13;&#10;WHEN &quot;Etablissement&quot; THEN [etablissement] &#13;&#10;WHEN &quot;Situation&quot; THEN [situation] &#13;&#10;END' />
+      </column>
+      <column aggregation='Attribute' caption='Couleur' datatype='string' name='[Calculation_673851157571534857]' role='measure' type='nominal'>
+        <calculation class='tableau' formula='IF {EXCLUDE [Calculation_673851157565521921], [Calculation_673851157565718530]: COUNTD([Calculation_673851157567737861])} &gt; [Parameters].[Paramètre 3]&#13;&#10;    THEN &quot;Trop de niveaux&quot;&#13;&#10;ELSE [Calculation_673851157567737861]&#13;&#10;END' />
+      </column>
+      <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+        <calculation class='tableau' formula='1' />
+      </column>
+      <column caption='Académie' datatype='string' name='[academie]' role='dimension' type='nominal' />
+      <column aggregation='Sum' caption='Année' datatype='integer' name='[annee]' role='dimension' type='ordinal' />
+      <column caption='% boursiers' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[de_diplomes_boursiers]' role='measure' type='quantitative' />
+      <column caption='Discipline' datatype='string' name='[discipline]' role='dimension' type='nominal' />
+      <column caption='Domaine' datatype='string' name='[domaine]' role='dimension' type='nominal' />
+      <column caption='% emplois temps plein' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[emplois_a_temps_plein]' role='measure' type='quantitative' />
+      <column caption='% cadres' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[emplois_cadre]' role='measure' type='quantitative' />
+      <column caption='% cadres ou intermédiaires' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[emplois_cadre_ou_professions_intermediaires]' role='measure' type='quantitative' />
+      <column caption='% emplois hors région' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[emplois_exterieurs_a_la_region_de_luniversite]' role='measure' type='quantitative' />
+      <column caption='% emplois stables' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[emplois_stables]' role='measure' type='quantitative' />
+      <column caption='Etablissement' datatype='string' name='[etablissement]' role='dimension' type='nominal' />
+      <column caption='% femmes' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[femmes]' role='measure' type='quantitative' />
+      <column caption='Nombre de réponses' datatype='integer' default-format='n#,##0;-#,##0' name='[nombre_de_reponses]' role='measure' type='quantitative' />
+      <column caption='Poids de la discipline' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[poids_de_la_discipline]' role='measure' type='quantitative' />
+      <column caption='Salaire brut annuel (estimé)' datatype='integer' default-format='c#,##0&quot; €&quot;;-#,##0&quot; €&quot;' name='[salaire_brut_annuel_estime]' role='measure' type='quantitative' />
+      <column caption='Salaire net mensuel médian' datatype='integer' default-format='c#,##0&quot; €&quot;;-#,##0&quot; €&quot;' name='[salaire_net_median_des_emplois_a_temps_plein]' role='measure' type='quantitative' />
+      <column caption='Salaire net mensuel régional - Q2 (médiane)' datatype='integer' default-format='c#,##0&quot; €&quot;;-#,##0&quot; €&quot;' name='[salaire_net_mensuel_median_regional]' role='measure' type='quantitative' />
+      <column caption='Salaire net mensuel régional - Q1' datatype='integer' default-format='c#,##0&quot; €&quot;;-#,##0&quot; €&quot;' name='[salaire_net_mensuel_regional_1er_quartile]' role='measure' type='quantitative' />
+      <column caption='Salaire net mensuel régional - Q3' datatype='integer' default-format='c#,##0&quot; €&quot;;-#,##0&quot; €&quot;' name='[salaire_net_mensuel_regional_3eme_quartile]' role='measure' type='quantitative' />
+      <column caption='Situation' datatype='string' name='[situation]' role='dimension' type='nominal' />
+      <column caption='Taux de chômage régional' datatype='real' default-format='n#,##0.0&quot;%&quot;;-#,##0.0&quot;%&quot;' name='[taux_de_chomage_regional]' role='measure' type='quantitative' />
+      <column caption='Taux de réponse' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[taux_de_reponse]' role='measure' type='quantitative' />
+      <column caption='Taux d&apos;insertion' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[taux_dinsertion]' role='measure' type='quantitative' />
+      <folder name='Champs paramétrables' role='dimensions'>
+        <folder-item name='[Calculation_673851157567737861]' type='field' />
+      </folder>
+      <folder name='Champs paramétrables' role='measures'>
+        <folder-item name='[Calculation_673851157565521921]' type='field' />
+        <folder-item name='[Calculation_673851157565718530]' type='field' />
+        <folder-item name='[Calculation_673851157571534857]' type='field' />
+      </folder>
+      <layout dim-ordering='alphabetic' dim-percentage='0.367041' measure-ordering='alphabetic' measure-percentage='0.514357' parameter-percentage='0.118602' show-structure='false' user-set-layout='true' />
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;France&quot;' />
+      </semantic-values>
+      <datasource-dependencies datasource='Parameters'>
+        <column caption='Ordonnée' datatype='string' name='[Abscisse (copie)]' param-domain-type='list' role='measure' type='nominal' value='&quot;Salaire net mensuel médian&quot;'>
+          <calculation class='tableau' formula='&quot;Salaire net mensuel médian&quot;' />
+        </column>
+        <column caption='Abscisse' datatype='string' name='[Paramètre 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;\% femmes&quot;'>
+          <calculation class='tableau' formula='&quot;% femmes&quot;' />
+        </column>
+        <column caption='Niveaux' datatype='string' name='[Paramètre 2]' param-domain-type='list' role='measure' type='nominal' value='&quot;Domaine&quot;'>
+          <calculation class='tableau' formula='&quot;Domaine&quot;' />
+        </column>
+        <column caption='Niveaux maximum' datatype='integer' name='[Paramètre 3]' param-domain-type='range' role='measure' type='quantitative' value='6'>
+          <calculation class='tableau' formula='6' />
+          <range min='1' />
+        </column>
+      </datasource-dependencies>
+    </datasource>
+    <datasource hasconnection='false' inline='true' name='Parameters' version='9.2'>
+      <aliases enabled='yes' />
+      <column caption='Ordonnée' datatype='string' name='[Abscisse (copie)]' param-domain-type='list' role='measure' type='nominal' value='&quot;Salaire net mensuel médian&quot;'>
+        <calculation class='tableau' formula='&quot;Salaire net mensuel médian&quot;' />
+        <members>
+          <member value='&quot;\% boursiers&quot;' />
+          <member value='&quot;\% cadres&quot;' />
+          <member value='&quot;\% cadres ou intermédiaires&quot;' />
+          <member value='&quot;\% emplois hors région&quot;' />
+          <member value='&quot;\% emplois stables&quot;' />
+          <member value='&quot;\% emplois temps plein&quot;' />
+          <member value='&quot;\% femmes&quot;' />
+          <member value='&quot;Nombre de réponses&quot;' />
+          <member value='&quot;Poids de la discipline&quot;' />
+          <member value='&quot;Salaire brut annuel (estimé)&quot;' />
+          <member value='&quot;Salaire net mensuel médian&quot;' />
+          <member value='&quot;Salaire net mensuel régional - Q1&quot;' />
+          <member value='&quot;Salaire net mensuel régional - Q2 (médiane)&quot;' />
+          <member value='&quot;Salaire net mensuel régional - Q3&quot;' />
+          <member value='&quot;Taux d&apos;insertion&quot;' />
+          <member value='&quot;Taux de chômage régional&quot;' />
+          <member value='&quot;Taux de réponse&quot;' />
+        </members>
+      </column>
+      <column caption='Abscisse' datatype='string' name='[Paramètre 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;\% femmes&quot;'>
+        <calculation class='tableau' formula='&quot;% femmes&quot;' />
+        <members>
+          <member value='&quot;\% boursiers&quot;' />
+          <member value='&quot;\% cadres&quot;' />
+          <member value='&quot;\% cadres ou intermédiaires&quot;' />
+          <member value='&quot;\% emplois hors région&quot;' />
+          <member value='&quot;\% emplois stables&quot;' />
+          <member value='&quot;\% emplois temps plein&quot;' />
+          <member value='&quot;\% femmes&quot;' />
+          <member value='&quot;Nombre de réponses&quot;' />
+          <member value='&quot;Poids de la discipline&quot;' />
+          <member value='&quot;Salaire brut annuel (estimé)&quot;' />
+          <member value='&quot;Salaire net mensuel médian&quot;' />
+          <member value='&quot;Salaire net mensuel régional - Q1&quot;' />
+          <member value='&quot;Salaire net mensuel régional - Q2 (médiane)&quot;' />
+          <member value='&quot;Salaire net mensuel régional - Q3&quot;' />
+          <member value='&quot;Taux d&apos;insertion&quot;' />
+          <member value='&quot;Taux de chômage régional&quot;' />
+          <member value='&quot;Taux de réponse&quot;' />
+        </members>
+      </column>
+      <column caption='Niveaux' datatype='string' name='[Paramètre 2]' param-domain-type='list' role='measure' type='nominal' value='&quot;Domaine&quot;'>
+        <calculation class='tableau' formula='&quot;Domaine&quot;' />
+        <members>
+          <member value='&quot;Aucun&quot;' />
+          <member value='&quot;Académie&quot;' />
+          <member value='&quot;Année&quot;' />
+          <member value='&quot;Discipline&quot;' />
+          <member value='&quot;Domaine&quot;' />
+          <member value='&quot;Etablissement&quot;' />
+          <member value='&quot;Situation&quot;' />
+        </members>
+      </column>
+      <column caption='Niveaux maximum' datatype='integer' name='[Paramètre 3]' param-domain-type='range' role='measure' type='quantitative' value='6'>
+        <calculation class='tableau' formula='6' />
+        <range min='1' />
+      </column>
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name='Nuage de points'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='insertion_Tableau' name='textscan.033rnfa0qr6jju119agoc1gq4wqi' />
+            <datasource caption='Paramètres' name='Parameters' />
+          </datasources>
+          <datasource-dependencies datasource='Parameters'>
+            <column caption='Ordonnée' datatype='string' name='[Abscisse (copie)]' param-domain-type='list' role='measure' type='nominal' value='&quot;Salaire net mensuel médian&quot;'>
+              <calculation class='tableau' formula='&quot;Salaire net mensuel médian&quot;' />
+            </column>
+            <column caption='Abscisse' datatype='string' name='[Paramètre 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;\% femmes&quot;'>
+              <calculation class='tableau' formula='&quot;% femmes&quot;' />
+            </column>
+            <column caption='Niveaux' datatype='string' name='[Paramètre 2]' param-domain-type='list' role='measure' type='nominal' value='&quot;Domaine&quot;'>
+              <calculation class='tableau' formula='&quot;Domaine&quot;' />
+            </column>
+            <column caption='Niveaux maximum' datatype='integer' name='[Paramètre 3]' param-domain-type='range' role='measure' type='quantitative' value='6'>
+              <calculation class='tableau' formula='6' />
+              <range min='1' />
+            </column>
+          </datasource-dependencies>
+          <datasource-dependencies datasource='textscan.033rnfa0qr6jju119agoc1gq4wqi'>
+            <column caption='X' datatype='real' name='[Calculation_673851157565521921]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='CASE [Parameters].[Paramètre 1]&#13;&#10;WHEN &quot;% boursiers&quot; THEN [de_diplomes_boursiers] &#13;&#10;WHEN &quot;% cadres&quot; THEN [emplois_cadre] &#13;&#10;WHEN &quot;% cadres ou intermédiaires&quot; THEN [emplois_cadre_ou_professions_intermediaires] &#13;&#10;WHEN &quot;% emplois hors région&quot; THEN [emplois_exterieurs_a_la_region_de_luniversite] &#13;&#10;WHEN &quot;% emplois stables&quot; THEN [emplois_stables] &#13;&#10;WHEN &quot;% emplois temps plein&quot; THEN [emplois_a_temps_plein] &#13;&#10;WHEN &quot;% femmes&quot; THEN [femmes] &#13;&#10;WHEN &quot;Nombre de réponses&quot; THEN [nombre_de_reponses] &#13;&#10;WHEN &quot;Poids de la discipline&quot; THEN [poids_de_la_discipline] &#13;&#10;WHEN &quot;Salaire brut annuel (estimé)&quot; THEN [salaire_brut_annuel_estime] &#13;&#10;WHEN &quot;Salaire net mensuel médian&quot; THEN [salaire_net_median_des_emplois_a_temps_plein] &#13;&#10;WHEN &quot;Salaire net mensuel régional - Q1&quot; THEN [salaire_net_mensuel_regional_1er_quartile] &#13;&#10;WHEN &quot;Salaire net mensuel régional - Q2 (médiane)&quot; THEN [salaire_net_mensuel_median_regional] &#13;&#10;WHEN &quot;Salaire net mensuel régional - Q3&quot; THEN [salaire_net_mensuel_regional_3eme_quartile] &#13;&#10;WHEN &quot;Taux d&apos;insertion&quot; THEN [taux_dinsertion] &#13;&#10;WHEN &quot;Taux de chômage régional&quot; THEN [taux_de_chomage_regional] &#13;&#10;WHEN &quot;Taux de réponse&quot; THEN [taux_de_reponse] &#13;&#10;END' />
+            </column>
+            <column caption='Y' datatype='real' name='[Calculation_673851157565718530]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='CASE [Parameters].[Abscisse (copie)]&#13;&#10;WHEN &quot;% boursiers&quot; THEN [de_diplomes_boursiers] &#13;&#10;WHEN &quot;% cadres&quot; THEN [emplois_cadre] &#13;&#10;WHEN &quot;% cadres ou intermédiaires&quot; THEN [emplois_cadre_ou_professions_intermediaires] &#13;&#10;WHEN &quot;% emplois hors région&quot; THEN [emplois_exterieurs_a_la_region_de_luniversite] &#13;&#10;WHEN &quot;% emplois stables&quot; THEN [emplois_stables] &#13;&#10;WHEN &quot;% emplois temps plein&quot; THEN [emplois_a_temps_plein] &#13;&#10;WHEN &quot;% femmes&quot; THEN [femmes] &#13;&#10;WHEN &quot;Nombre de réponses&quot; THEN [nombre_de_reponses] &#13;&#10;WHEN &quot;Poids de la discipline&quot; THEN [poids_de_la_discipline] &#13;&#10;WHEN &quot;Salaire brut annuel (estimé)&quot; THEN [salaire_brut_annuel_estime] &#13;&#10;WHEN &quot;Salaire net mensuel médian&quot; THEN [salaire_net_median_des_emplois_a_temps_plein] &#13;&#10;WHEN &quot;Salaire net mensuel régional - Q1&quot; THEN [salaire_net_mensuel_regional_1er_quartile] &#13;&#10;WHEN &quot;Salaire net mensuel régional - Q2 (médiane)&quot; THEN [salaire_net_mensuel_median_regional] &#13;&#10;WHEN &quot;Salaire net mensuel régional - Q3&quot; THEN [salaire_net_mensuel_regional_3eme_quartile] &#13;&#10;WHEN &quot;Taux d&apos;insertion&quot; THEN [taux_dinsertion] &#13;&#10;WHEN &quot;Taux de chômage régional&quot; THEN [taux_de_chomage_regional] &#13;&#10;WHEN &quot;Taux de réponse&quot; THEN [taux_de_reponse] &#13;&#10;END' />
+            </column>
+            <column caption='Niveaux pour couleur' datatype='string' name='[Calculation_673851157567737861]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='CASE [Parameters].[Paramètre 2]&#13;&#10;WHEN &quot;Aucun&quot; THEN &quot;Aucun&quot; &#13;&#10;WHEN &quot;Académie&quot; THEN [academie] &#13;&#10;WHEN &quot;Année&quot; THEN STR([annee]) &#13;&#10;WHEN &quot;Discipline&quot; THEN [discipline] &#13;&#10;WHEN &quot;Domaine&quot; THEN [domaine] &#13;&#10;WHEN &quot;Etablissement&quot; THEN [etablissement] &#13;&#10;WHEN &quot;Situation&quot; THEN [situation] &#13;&#10;END' />
+            </column>
+            <column aggregation='Attribute' caption='Couleur' datatype='string' name='[Calculation_673851157571534857]' role='measure' type='nominal'>
+              <calculation class='tableau' formula='IF {EXCLUDE [Calculation_673851157565521921], [Calculation_673851157565718530]: COUNTD([Calculation_673851157567737861])} &gt; [Parameters].[Paramètre 3]&#13;&#10;    THEN &quot;Trop de niveaux&quot;&#13;&#10;ELSE [Calculation_673851157567737861]&#13;&#10;END' />
+            </column>
+            <column caption='Académie' datatype='string' name='[academie]' role='dimension' type='nominal' />
+            <column aggregation='Sum' caption='Année' datatype='integer' name='[annee]' role='dimension' type='ordinal' />
+            <column-instance column='[Calculation_673851157571534857]' derivation='Attribute' name='[attr:Calculation_673851157571534857:nk]' pivot='key' type='nominal' />
+            <column caption='% boursiers' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[de_diplomes_boursiers]' role='measure' type='quantitative' />
+            <column caption='Discipline' datatype='string' name='[discipline]' role='dimension' type='nominal' />
+            <column caption='Domaine' datatype='string' name='[domaine]' role='dimension' type='nominal' />
+            <column caption='% emplois temps plein' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[emplois_a_temps_plein]' role='measure' type='quantitative' />
+            <column caption='% cadres' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[emplois_cadre]' role='measure' type='quantitative' />
+            <column caption='% cadres ou intermédiaires' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[emplois_cadre_ou_professions_intermediaires]' role='measure' type='quantitative' />
+            <column caption='% emplois hors région' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[emplois_exterieurs_a_la_region_de_luniversite]' role='measure' type='quantitative' />
+            <column caption='% emplois stables' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[emplois_stables]' role='measure' type='quantitative' />
+            <column caption='Etablissement' datatype='string' name='[etablissement]' role='dimension' type='nominal' />
+            <column caption='% femmes' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[femmes]' role='measure' type='quantitative' />
+            <column caption='Nombre de réponses' datatype='integer' default-format='n#,##0;-#,##0' name='[nombre_de_reponses]' role='measure' type='quantitative' />
+            <column-instance column='[Calculation_673851157565521921]' derivation='None' name='[none:Calculation_673851157565521921:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Calculation_673851157565718530]' derivation='None' name='[none:Calculation_673851157565718530:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Calculation_673851157567737861]' derivation='None' name='[none:Calculation_673851157567737861:nk]' pivot='key' type='nominal' />
+            <column caption='Poids de la discipline' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[poids_de_la_discipline]' role='measure' type='quantitative' />
+            <column caption='Salaire brut annuel (estimé)' datatype='integer' default-format='c#,##0&quot; €&quot;;-#,##0&quot; €&quot;' name='[salaire_brut_annuel_estime]' role='measure' type='quantitative' />
+            <column caption='Salaire net mensuel médian' datatype='integer' default-format='c#,##0&quot; €&quot;;-#,##0&quot; €&quot;' name='[salaire_net_median_des_emplois_a_temps_plein]' role='measure' type='quantitative' />
+            <column caption='Salaire net mensuel régional - Q2 (médiane)' datatype='integer' default-format='c#,##0&quot; €&quot;;-#,##0&quot; €&quot;' name='[salaire_net_mensuel_median_regional]' role='measure' type='quantitative' />
+            <column caption='Salaire net mensuel régional - Q1' datatype='integer' default-format='c#,##0&quot; €&quot;;-#,##0&quot; €&quot;' name='[salaire_net_mensuel_regional_1er_quartile]' role='measure' type='quantitative' />
+            <column caption='Salaire net mensuel régional - Q3' datatype='integer' default-format='c#,##0&quot; €&quot;;-#,##0&quot; €&quot;' name='[salaire_net_mensuel_regional_3eme_quartile]' role='measure' type='quantitative' />
+            <column caption='Situation' datatype='string' name='[situation]' role='dimension' type='nominal' />
+            <column-instance column='[Calculation_673851157565521921]' derivation='Sum' name='[sum:Calculation_673851157565521921:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Calculation_673851157565718530]' derivation='Sum' name='[sum:Calculation_673851157565718530:qk]' pivot='key' type='quantitative' />
+            <column caption='Taux de chômage régional' datatype='real' default-format='n#,##0.0&quot;%&quot;;-#,##0.0&quot;%&quot;' name='[taux_de_chomage_regional]' role='measure' type='quantitative' />
+            <column caption='Taux de réponse' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[taux_de_reponse]' role='measure' type='quantitative' />
+            <column caption='Taux d&apos;insertion' datatype='integer' default-format='n#,##0&quot;%&quot;;-#,##0&quot;%&quot;' name='[taux_dinsertion]' role='measure' type='quantitative' />
+          </datasource-dependencies>
+          <filter class='quantitative' column='[textscan.033rnfa0qr6jju119agoc1gq4wqi].[none:Calculation_673851157565521921:qk]' included-values='non-null' />
+          <filter class='quantitative' column='[textscan.033rnfa0qr6jju119agoc1gq4wqi].[none:Calculation_673851157565718530:qk]' included-values='non-null' />
+          <filter class='categorical' column='[textscan.033rnfa0qr6jju119agoc1gq4wqi].[none:Calculation_673851157567737861:nk]'>
+            <groupfilter function='level-members' level='[none:Calculation_673851157567737861:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <slices>
+            <column>[textscan.033rnfa0qr6jju119agoc1gq4wqi].[none:Calculation_673851157567737861:nk]</column>
+            <column>[textscan.033rnfa0qr6jju119agoc1gq4wqi].[none:Calculation_673851157565521921:qk]</column>
+            <column>[textscan.033rnfa0qr6jju119agoc1gq4wqi].[none:Calculation_673851157565718530:qk]</column>
+          </slices>
+          <aggregation value='false' />
+        </view>
+        <style />
+        <panes>
+          <pane id='4'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Circle' />
+            <encodings>
+              <color column='[textscan.033rnfa0qr6jju119agoc1gq4wqi].[attr:Calculation_673851157571534857:nk]' />
+            </encodings>
+            <customized-tooltip>
+              <formatted-text>
+                <run fontcolor='#787878' fontname='Calibri'>&lt;[Parameters].[Paramètre 2]&gt;:&#9;</run>
+                <run bold='true' fontname='Calibri'>&lt;[textscan.033rnfa0qr6jju119agoc1gq4wqi].[attr:Calculation_673851157571534857:nk]&gt;</run>
+                <run fontcolor='#787878' fontname='Calibri'>&#10;&lt;[Parameters].[Paramètre 1]&gt;:&#9;</run>
+                <run bold='true' fontname='Calibri'>&lt;[textscan.033rnfa0qr6jju119agoc1gq4wqi].[sum:Calculation_673851157565521921:qk]&gt;</run>
+                <run fontcolor='#787878' fontname='Calibri'>&#10;&lt;[Parameters].[Abscisse (copie)]&gt;:&#9;</run>
+                <run bold='true' fontname='Calibri'>&lt;[textscan.033rnfa0qr6jju119agoc1gq4wqi].[sum:Calculation_673851157565718530:qk]&gt;</run>
+              </formatted-text>
+            </customized-tooltip>
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-transparency' value='103' />
+                <format attr='size' value='0.88955801725387573' />
+                <format attr='has-stroke' value='false' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>[textscan.033rnfa0qr6jju119agoc1gq4wqi].[sum:Calculation_673851157565718530:qk]</rows>
+        <cols>[textscan.033rnfa0qr6jju119agoc1gq4wqi].[sum:Calculation_673851157565521921:qk]</cols>
+      </table>
+    </worksheet>
+  </worksheets>
+  <windows source-height='28'>
+    <window class='worksheet' maximized='true' name='Nuage de points'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+            <card pane-specification-id='4' param='[textscan.033rnfa0qr6jju119agoc1gq4wqi].[attr:Calculation_673851157571534857:nk]' type='color' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='170'>
+            <card mode='compact' param='[Parameters].[Paramètre 1]' type='parameter' />
+            <card mode='compact' param='[Parameters].[Abscisse (copie)]' type='parameter' />
+            <card mode='compact' param='[Parameters].[Paramètre 2]' type='parameter' />
+            <card mode='type_in' param='[Parameters].[Paramètre 3]' type='parameter' />
+            <card mode='checkdropdown' param='[textscan.033rnfa0qr6jju119agoc1gq4wqi].[none:Calculation_673851157567737861:nk]' type='filter' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[textscan.033rnfa0qr6jju119agoc1gq4wqi].[attr:Calculation_673851157571534857:nk]</field>
+            <field>[textscan.033rnfa0qr6jju119agoc1gq4wqi].[none:Calculation_673851157565521921:qk]</field>
+            <field>[textscan.033rnfa0qr6jju119agoc1gq4wqi].[none:Calculation_673851157565718530:qk]</field>
+            <field>[textscan.033rnfa0qr6jju119agoc1gq4wqi].[none:Calculation_673851157567737861:nk]</field>
+            <field>[textscan.033rnfa0qr6jju119agoc1gq4wqi].[none:academie:nk]</field>
+            <field>[textscan.033rnfa0qr6jju119agoc1gq4wqi].[none:discipline:nk]</field>
+            <field>[textscan.033rnfa0qr6jju119agoc1gq4wqi].[usr:Niveaux pour couleur (copie):nk]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='192' name='Nuage de points' width='192'>
+      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
+      rkJggg==
+    </thumbnail>
+  </thumbnails>
+</workbook>
