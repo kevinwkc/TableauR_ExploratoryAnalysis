@@ -48,7 +48,7 @@ Si le travail de préparation des données ne vous intéresse pas et que vous so
 
 Sinon, n'oubliez pas de configurer au préalable votre répertoire de travail avec la fonction `setwd`.  
 
-Nous commençons par télécharger les données, puis nous réglons les problèmes de qualité des données. Nous supprimons ensuite les cas où le nombre de réponses est inférieur à 30, ainsi que ceux où le taux de réponse est inférieur à 30%. Nous sélection également les colonnes qui nous intéressent. Enfin, nous exportons un fichier _.csv_ pour Tableau et nous affichons un échantillon des données.  
+Nous commençons par télécharger les données, puis nous réglons les problèmes de qualité des données. Nous supprimons ensuite les cas où le nombre de réponses est inférieur à 30, ainsi que ceux où le taux de réponse est inférieur à 30%. Nous sélectionnons également les colonnes qui nous intéressent. Enfin, nous exportons un fichier _.csv_ pour Tableau et nous affichons un échantillon des données.  
 ```{r dl_clean, cache=TRUE, message=FALSE}
 # load packages
 if (!require("pacman")) install.packages("pacman")
@@ -74,7 +74,7 @@ insertion <- insertion %>%
              numero_de_l_etablissement != "UNIV") %>%
       select(-c(numero_de_l_etablissement, code_de_l_academie, code_du_domaine, 
                 code_de_la_discipline, remarque, cle_etab, cle_disc))
-      
+
 # export data in csv for Tableau
 # note: we remove R "NAs" and replace with empty cells since Tableau doesn't handle them
 insertion_noNa <- insertion
@@ -170,10 +170,13 @@ grid.arrange(arrangeGrob(g2, gText, ncol=2, widths=c(3, 1)),
 Bien entendu ce code pourrait être largement amélioré (ajout de la légende, alignement dynamique des différents éléments, etc.) mais vous avez compris le problème : c'est difficile à maintenir, et surtout cela manque cruellement d’interactivité. Je peux changer mes variables, mais pour cela je dois modifier puis relancer mon code. De plus, je ne suis pas sûr que l'alignement de mes graphiques restera bon. Je n'ai pas non plus la possibilité d'ajouter des infobulles ni de filtrer mes données... Bref, et si l'on essayait de porter tout cela dans Tableau ?  
 <br>  
 
+#### Mise en place
 Vous trouverez le classeur Tableau dans le [répertoire Github](https://github.com/simonkth/TableauR_ExploratoryAnalysis) (_TableauR_ExploratoryAnalysis_FR.twb_). Je ne vais pas détailler tous les champs calculés, aussi je vous conseille de travailler avec deux fenêtres de Tableau. Dans la première, ouvrez mon classeur et jetez y un coup d’œil de temps en temps pour voir comment je m'y suis pris. Dans la deuxième, ouvrez un classeur vierge et recommencez à partir de zéro.  
 
 La première étape est de se connecter aux données (fichier _insertion_Tableau.csv_). N'hésitez pas à renommer les champs et à formater correctement les mesures, comme je l'ai fait. Puis nous passons au premier élément, le nuage de points.  
+<br>  
 
+#### Nuage de points amélioré
 D'abord, n'oublier pas de désactiver l'agrégation dans _Analyse_ $\rightarrow$ _Agréger les mesures_. Ensuite, le premier réflexe est de dynamiser notre vue en créant un certain nombre de paramètres, ainsi que les champs paramétrables correspondants. Faites _clique-droit_ $\rightarrow$ _modifier_ pour comprendre comment ils sont construits. Pour le nuage de points, nous avons donc :  
 
 * le paramètre __Abscisse__ qui commande le champ __X__  
@@ -182,7 +185,7 @@ D'abord, n'oublier pas de désactiver l'agrégation dans _Analyse_ $\rightarrow$
 
 Grâce aux deux premiers paramètres, je peux choisir les mesures que je souhaite placer en abscisse et en ordonnée. Quelques précisions s'imposent pour le dernier point. Grâce à __Niveaux__, je peux choisir une dimension pour déterminer la couleur des points (via le champ __Niveaux pour couleur__). Cependant je ne contrôle pas le nombre de niveaux que contient cette dimension ! Par sécurité, je créé un nouveau couple paramètre / champ calculé (__Niveaux maximum__ et __Couleur__) qui va me permettre de n'afficher des couleurs que si le nombre de niveaux ne dépasse pas un certain seuil. C'est donc le champ __Couleur__ que je place sur mon repère des couleurs. En revanche, je peux utiliser le champ __Niveaux pour couleur__ pour filtrer ma dimension. Ainsi, bien qu'il y ait 28 niveaux pour la dimension __Académie__, si je la sélectionne puis que je filtre pour ne garder que 6 niveaux (et que __Niveaux maximum__ est fixé à 6), les académies que j'ai sélectionné vont bel et bien s'afficher en couleur. En revanche si j'ajoute une académie de trop à ma sélection, Tableau repasse sur une couleur unique.  
 
-Les paramètres __Abscisse__ et __Ordonnée__ sont respectivement placés en colonne et en ligne pour faire office de titre d'axe. Je filtre également mes champs __X__ et __Y__ pour exclure les cas où les valeur sont manquantes.  
+Je filtre également mes champs __X__ et __Y__ pour exclure les cas où les valeur sont manquantes.  
 
 ![Nuage de points dynamique dans Tableau](figures/nuage_de_points.png)  
 <br>  
@@ -192,29 +195,40 @@ Passons à la courbe de tendance. Tableau propose déjà une solution, cependant
 Notons deux points pour cette section. D'abord, je ne prends pas en compte les niveaux de la dimension qui détermine la couleur : on souhaite afficher une seule courbe de tendance afin de ne pas surcharger le graphique, un modèle simple fera l'affaire. Ensuite, je souhaite non seulement obtenir la courbe de tendance, mais aussi un intervalle de confiance (95%). Je souhaite également obtenir des indicateurs sur la qualité de la régression. Pour éviter de faire appel plusieurs fois à R, je concatène tous les résultats dans un seul champ de type chaîne de caractère que je pourrai ensuite parser dans Tableau.  
 
 Le format final est donc : _lower___<___fit___>___upper___|1|___Residual standard error___|2|___Multiple R-squared___|3|___Adjusted R-squared___|4|___F-test p-value_  
-```{r model, results="hide"}
-# set variables
+```{r Tableau_model, results="hide"}
+# Tableau variables
+# values are given as an example here, replace with args in Tableau
 x <- insertion$femmes
 y <- insertion$salaire_net_median_des_emplois_a_temps_plein
 modelType <- "loess/gam" # as an example
+
+# fixed arguments
 confLvl <- 0.95 # confidence interval
 loessLimit <- 1500 # n limit for computing LOESS
 
-# remove missing values (do this with filters in Tableau)
+###########################
+# remove missing values (only in R, do this with filters in Tableau)
 complete <- complete.cases(x, y)
 x <- x[complete]
 y <- y[complete]
+##########################
 
-# choose model
+###### choose model ######
+# LOESS/GAM case
 if(modelType == "loess/gam") {
-      if(length(x) <= loessLimit) {
+      # LOESS if dataset size is less than the limit
+      if(length(y) <= loessLimit) {
             model <- loess(y ~ x)
             pred <- predict(model, se=TRUE)
+            # prepare data for trend line
             trendLine <- paste0(
-                  formatC(pred$fit - (qt(1 - (1 - confLvl) / 2, pred$df) * pred$se), digits=5, format="f"), "<",
-                  formatC(pred$fit, digits=5, format="f"), ">",
-                  formatC(pred$fit + (qt(1 - (1 - confLvl) / 2, pred$df) * pred$se), digits=5, format="f")
+                  pred$fit - (qt(1 - (1 - confLvl) / 2, pred$df) * pred$se), 
+                  "<",
+                  pred$fit, 
+                  ">",
+                  pred$fit + (qt(1 - (1 - confLvl) / 2, pred$df) * pred$se)
             )
+            # prepare data for summary
             SSE <- sum((y - pred$fit)^2) # sum of squares for error
             SST <- sum((y - mean(y))^2) # sum of squares total
             SSM <- sum((pred$fit - mean(y))^2) # sum of squares for model
@@ -224,18 +238,23 @@ if(modelType == "loess/gam") {
             fStat <- (SSM/1) / (SSE/DFE) # F-test
             pValue <- pf(fStat, 1, DFE, lower.tail=FALSE)
       } else {
+            # GAM if dataset too big
             if (!require("mgcv")) {
                   install.packages("mgcv")
-                  library(mgcv)
+                  require(mgcv)
             }
             model <- gam(y ~ ti(x))
             pred <- predict(model, se.fit=TRUE)
             DFE <- length(y) - 1 # degrees of freedom
+            # prepare data for trend line
             trendLine <- paste0(
-                  formatC(pred$fit - (qt(1 - (1 - confLvl) / 2, DFE) * pred$se.fit), digits=5, format="f"), "<",
-                  formatC(pred$fit, digits=5, format="f"), ">",
-                  formatC(pred$fit + (qt(1 - (1 - confLvl) / 2, DFE) * pred$se.fit), digits=5, format="f")
+                  pred$fit - (qt(1 - (1 - confLvl) / 2, DFE) * pred$se.fit), 
+                  "<",
+                  pred$fit, 
+                  ">",
+                  pred$fit + (qt(1 - (1 - confLvl) / 2, DFE) * pred$se.fit)
             )
+            # prepare data for summary
             SSE <- sum((y - pred$fit)^2) # sum of squares for error
             SST <- sum((y - mean(y))^2) # sum of squares total
             SSM <- sum((pred$fit - mean(y))^2) # sum of squares for model
@@ -244,20 +263,26 @@ if(modelType == "loess/gam") {
             fStat <- (SSM/1) / (SSE/DFE) # F-test
             pValue <- pf(fStat, 1, DFE, lower.tail=FALSE)
       }
-            modelSummary <- paste0(
-            "|1|Residual standard error: ", formatC(pred$residual.scale, digits=1, format="f"), 
-            " on ", formatC(pred$df, digits=1, format="f"), " degrees of freedom", 
-            "|2|Multiple R-squared: ",  formatC(r.squared, digits=4, format="f"),
-            "|3|Adjusted R-squared: ",  formatC(adj.r.squared, digits=4, format="f"),
-            "|4|F-test p-value: ",  formatC(pValue, digits=4, format="e")
+      # return results to Tableau
+      modelSummary <- paste0(
+      "|1|Residual standard error: ", formatC(pred$residual.scale, digits=1, format="f"), 
+      " on ", formatC(pred$df, digits=1, format="f"), " degrees of freedom", 
+      "|2|Multiple R-squared: ",  formatC(r.squared, digits=4, format="f"),
+      "|3|Adjusted R-squared: ",  formatC(adj.r.squared, digits=4, format="f"),
+      "|4|F-test p-value: ",  formatC(pValue, digits=4, format="e")
       )
       paste0(trendLine, modelSummary)
+# linear model cases
 } else if(substr(modelType, 1, 2) == "lm") {
+      # set formula
       lm_formula <- if(modelType == "lm") {
+            # simple model case
             y ~ x
       } else if(substr(modelType, 4, 6) == "log") {
+            # log case
             y ~ log(x)
       } else if(substr(modelType, 4, 6) == "pol") {
+            # polynomial case (with degree 2 to 4)
             degree <- as.numeric(substr(modelType, 8, 8))
             if(degree == 2) {
                  y ~ x + I(x^2) 
@@ -267,14 +292,20 @@ if(modelType == "loess/gam") {
                  y ~ x + I(x^2) + I(x^3) + I(x^4)
             }
       }
+      # compute linear model with chosen formula
       model <- lm(lm_formula)
       pred <- predict(model, interval="confidence", level=confLvl)
+      # prepare data for trend line
       trendLine <- paste0(
-            formatC(pred[, "lwr"], digits=5, format="f"), "<",
-            formatC(pred[, "fit"], digits=5, format="f"), ">",
-            formatC(pred[, "upr"], digits=5, format="f")
+            pred[, "lwr"],  
+            "<",
+            pred[, "fit"],  
+            ">",
+            pred[, "upr"]
       )
+      # prepare data for summary
       mSum <- summary(model)
+      # return results to Tableau
       modelSummary <- paste0(
             "|1|Residual standard error: ", formatC(mSum$sigma, digits=1, format="f"), 
             " on ", mSum$df[2], " degrees of freedom", 
@@ -292,7 +323,58 @@ if(modelType == "loess/gam") {
 Quelques modifications minimes permettent d'interfacer ce code dans Tableau (champ __Script R : courbe de tendance__) en utilisant la fonction _SCRIPT_STR_. Il faut ensuite parser ce champ pour obtenir les différents éléments :  
 
 * le champ __lwr__ pour la limite basse de la courbe de tendance  
-* le champ __fit__ pour la courbe de tendance
-* le champ __upr__ pour la limite haute de la courbe de tendance
-* le champ __summary__ pour les détails du modèle
+* le champ __fit__ pour la courbe de tendance  
+* le champ __upr__ pour la limite haute de la courbe de tendance  
+* le champ __summary__ pour les détails du modèle  
 
+Ensuite pour ajouter le tout dans la vue :  
+
+1. glissez __Noms de mesures__ dans les filtres  
+2. sélectionnez les champs __lwr__, __fit__ et __upr__  
+3. glissez __Valeurs de mesures__ en lignes et créez un axe double (en synchronisant les axes)  
+4. glissez __Noms de mesures__ en couleur dans le repère __Valeurs de mesures__, attribuez une couleur au champ __fit__ et une autre aux champs __lrw__ et __upr__  
+5. enfin vous pouvez placer __summary__ en infobulle  
+<br>  
+
+#### Densités marginales
+Sur notre nuage de points, les densité marginales sont les fonctions de densité de nos composantes X et Y. Par exemple si l'on prend une ligne au hasard dans notre jeu de données (soit une discipline pour une année et un établissement précis, valeurs nulles exclues) et que X est le pourcentage de femmes, l'aire sous la fonction de densité de X entre deux valeurs est la probabilité que le pourcentage de femmes soit compris entre ces deux valeurs. Ainsi si l'aire est de 0.25 entre 0% et 50%, cela signifie qu'il y a 25% de chances qu'il y ait moins d'une femme sur deux dans la discipline observée.  
+
+Ainsi, afficher les densités marginales aux marges de notre nuage de points nous permet de visualiser la répartition des points sur les axes X et Y, même lorsque le graphique est très chargé et que de nombreux points se retrouvent superposés.  
+```{r Tableau_density, results="hide"}
+# Tableau variables
+# values are given as an example here, replace with args in Tableau
+vec <- x
+axisMin <- min(vec)
+axisMax <- max(vec)
+
+###### calculated variables ######
+# number of elements in the data
+size <- length(vec)
+# find next power of two for number of kernel density estimates
+n_dens <- 2^ceiling(log2(size))
+# choose smoothing bandwidth for the Gaussian kernel density estimator
+bw_dens <- bw.nrd0(vec) 
+# select the left and right-most points of the axis at which the density is to be estimated
+from_dens <- min(vec) - 3 * bw_dens
+if(from_dens < axisMin) {from_dens <- axisMin}
+to_dens <- max(vec) + 3 * bw_dens
+if(to_dens > axisMax) {to_dens <- axisMax}
+
+# computes kernel density estimates
+dens <- density(vec, bw = bw_dens, kernel = "gaussian", n = n_dens, from = from_dens, to = to_dens)
+
+# perform cubic spline interpolation in order to have a number of points equal to the sample size
+# (we use sample size minus two because we need to have a zero value on the left and right ends
+# in order to draw polygons in Tableau)
+coords <- spline(dens$x, dens$y, n = size - 2)
+coords <- cbind(c(coords$x[1], coords$x, coords$x[size - 2]), 
+                c(coords$y[1], coords$y, coords$y[size - 2]), 
+                c(0, coords$y, 0))
+
+# return as a string that will be parsed in tableau: path, x, y for lines, y for polygons
+paste0(coords[,1], "l", coords[,2], "p", coords[,3])
+```
+<br>  
+
+#### Alignement des axes et agencement des vues
+...  
