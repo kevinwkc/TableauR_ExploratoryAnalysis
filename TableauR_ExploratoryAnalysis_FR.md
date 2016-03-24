@@ -202,7 +202,7 @@ La première étape est de se connecter aux données (fichier _insertion_Tableau
 <br>  
 
 #### Nuage de points amélioré
-D'abord, n'oublier pas de désactiver l'agrégation dans _Analyse_ $\rightarrow$ _Agréger les mesures_. Ensuite, le premier réflexe est de dynamiser notre vue en créant un certain nombre de paramètres, ainsi que les champs paramétrables correspondants. Faites _clique-droit_ $\rightarrow$ _modifier_ pour comprendre comment ils sont construits. Pour le nuage de points, nous avons donc :  
+D'abord, n'oubliez pas de désactiver l'agrégation dans _Analyse_ $\rightarrow$ _Agréger les mesures_. Ensuite, le premier réflexe est de dynamiser notre vue en créant un certain nombre de paramètres, ainsi que les champs paramétrables correspondants. Faites _clique-droit_ $\rightarrow$ _modifier_ pour comprendre comment ils sont construits. Pour le nuage de points, nous avons donc :  
 
 * le paramètre __Abscisse__ qui commande le champ __X__  
 * le paramètre __Ordonnée__ qui commande le champ __Y__  
@@ -218,6 +218,8 @@ Je filtre également mes champs __X__ et __Y__ pour exclure les cas où les vale
 Passons à la courbe de tendance. Tableau propose déjà une solution, cependant l'idéal serait de pouvoir ajouter d'autres possibilités, comme la régression LOESS par exemple. Pour cela on va utiliser un paramètre permettant de choisir le type de modèle, et un script R pour réaliser les calculs. Dans cet exemple, je propose une régression LOESS (ou [GAM](https://en.wikipedia.org/wiki/Generalized_additive_model) s'il y a plus de 1500 points), ou une régression linéaire (modèle simple, logarithmique, ou polynomial de degré 2, 3 ou 4). Le paramètre se nomme __Type de modèle__.  
 
 Notons deux points pour cette section. D'abord, je ne prends pas en compte les niveaux de la dimension qui détermine la couleur : on souhaite afficher une seule courbe de tendance afin de ne pas surcharger le graphique, un modèle simple fera l'affaire. Ensuite, je souhaite non seulement obtenir la courbe de tendance, mais aussi un intervalle de confiance (95%). Je souhaite également obtenir des indicateurs sur la qualité de la régression. Pour éviter de faire appel plusieurs fois à R, je concatène tous les résultats dans un seul champ de type chaîne de caractère que je pourrai ensuite parser dans Tableau.  
+
+Le code est améliorable notamment au niveau de sa modularité... Je m'en occuperai peut être ultérieurement pour une mise à jour de l'article.  
 
 Le format final est donc : _lower___<___fit___>___upper___|1|___Residual standard error___|2|___Multiple R-squared___|3|___Adjusted R-squared___|4|___F-test p-value_  
 
@@ -367,6 +369,8 @@ Sur notre nuage de points, les densité marginales sont les fonctions de densit�
 
 Ainsi, afficher les densités marginales aux marges de notre nuage de points nous permet de visualiser la répartition des points sur les axes X et Y, même lorsque le graphique est très chargé et que de nombreux points se retrouvent superposés.  
 
+...
+
 ```r
 # Tableau variables
 # values are given as an example here, replace with args in Tableau
@@ -391,14 +395,14 @@ if(to_dens > axisMax) {to_dens <- axisMax}
 dens <- density(vec, bw = bw_dens, kernel = "gaussian", n = n_dens, from = from_dens, to = to_dens)
 
 # perform cubic spline interpolation in order to have a number of points equal to the sample size
-# (we use sample size minus two because we need to have a zero value on the left and right ends
+# (we use sample size minus two because we need to have a zero values on the left and right ends
 # in order to draw polygons in Tableau)
 coords <- spline(dens$x, dens$y, n = size - 2)
 coords <- cbind(c(coords$x[1], coords$x, coords$x[size - 2]), 
                 c(coords$y[1], coords$y, coords$y[size - 2]), 
                 c(0, coords$y, 0))
 
-# return as a string that will be parsed in tableau: path, x, y for lines, y for polygons
+# return as a string that will be parsed in tableau: x, y for lines, y for polygons
 paste0(coords[,1], "l", coords[,2], "p", coords[,3])
 ```
 <br>  
