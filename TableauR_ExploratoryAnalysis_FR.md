@@ -16,7 +16,7 @@
 Tous des fichiers sont disponible dans ce [répertoire Github](https://github.com/simonkth/TableauR_ExploratoryAnalysis).  
 Si vous souhaitez reproduire cet outil, assurez-vous de remplir les prérequis suivants avant de continuer :  
 
-* avoir installé une version de Tableau Desktop supportant l'intégration avec R (8.1 ou supérieure)  
+* avoir installé une version de Tableau Desktop supportant l'intégration avec R (8.1 ou supérieure, 9.3 recommandée)  
       + vous pouvez vous procurer une version d'essai à [cette adresse](http://get.tableau.com/fr-fr/partner-trial.html?partner=29294)  
 * avoir installé R version 3.0.2 ou supérieure (disponible [ici](https://www.r-project.org/))  
 * avoir ajouté R à votre variable d'environnement _path_ (par exemple, "_C:\\Program Files\\R\\R-3.0.2\\bin\\x64_")  
@@ -115,7 +115,7 @@ str(insertion)
 <br>  
 
 ### Nuage de points et densitées marginales
-L'un de mes premiers réflexes lorsque j'explore un nouveau jeu de données est de rechercher des relation entre les différentes variables. Pour les variables quantitatives, le nuage de point est un incontournable. Sur ce type de graphique, j'ai également tendance à utiliser la couleur pour comparer les différents niveaux d'une variable qualitative (ou dimension).  
+L'un de mes premiers réflexes lorsque j'explore un nouveau jeu de données est de rechercher des relations entre les différentes variables. Pour les variables quantitatives, le nuage de point est un incontournable. Sur ce type de graphique, j'ai également tendance à utiliser la couleur pour comparer les différents niveaux d'une variable qualitative (ou dimension).  
 
 Le problème avec les nuages de points, c'est qu'ils ont tendance à devenir rapidement illisibles lorsqu'il y a beaucoup d'éléments à afficher. Il est donc intéressant d'enrichir ces vues. On peut ainsi y ajouter différents éléments : une courbe de tendance, le résultat d'un test statistique, ou encore les densités marginales des nos variables...  
 
@@ -210,7 +210,7 @@ D'abord, n'oubliez pas de désactiver l'agrégation dans _Analyse_ $\rightarrow$
 
 Grâce aux deux premiers paramètres, je peux choisir les mesures que je souhaite placer en abscisse et en ordonnée. Quelques précisions s'imposent pour le dernier point. Grâce à __Niveaux__, je peux choisir une dimension pour déterminer la couleur des points (via le champ __Niveaux pour couleur__). Cependant je ne contrôle pas le nombre de niveaux que contient cette dimension ! Par sécurité, je créé un nouveau couple paramètre / champ calculé (__Niveaux maximum__ et __Couleur__) qui va me permettre de n'afficher des couleurs que si le nombre de niveaux ne dépasse pas un certain seuil. C'est donc le champ __Couleur__ que je place sur mon repère des couleurs. En revanche, je peux utiliser le champ __Niveaux pour couleur__ pour filtrer ma dimension. Ainsi, bien qu'il y ait 28 niveaux pour la dimension __Académie__, si je la sélectionne puis que je filtre pour ne garder que 6 niveaux (et que __Niveaux maximum__ est fixé à 6), les académies que j'ai sélectionné vont bel et bien s'afficher en couleur. En revanche si j'ajoute une académie de trop à ma sélection, Tableau repasse sur une couleur unique.  
 
-Je filtre également mes champs __X__ et __Y__ pour exclure les cas où les valeur sont manquantes.  
+Notez que j'utilise un _LOD_ de type _FIXED_ pour pouvoir faire du champ __Couleur__ une dimension. Cela sera important plus loin pour construire les densités marginales. De plus, le filtre __Niveaux pour couleur__ est placé en contexte afin de bien prendre en compte la diminution du nombre de niveaux lorsque j'en écarte certains. Je filtre également mes champs __X__ et __Y__ pour exclure les cas où les valeurs sont manquantes.  
 
 ![Nuage de points dynamique dans Tableau](figures/nuage_de_points.png)  
 <br>  
@@ -228,11 +228,13 @@ Le format final est donc : _lower___<___fit___>___upper___|1|___Residual standar
 # values are given as an example here, replace with args in Tableau
 x <- insertion$femmes
 y <- insertion$salaire_net_median_des_emplois_a_temps_plein
-modelType <- "loess/gam" # as an example
+modelType <- "lm_pol_3" # as an example
 
 # fixed arguments
 confLvl <- 0.95 # confidence interval
 loessLimit <- 1500 # n limit for computing LOESS
+
+# TODO: fix degrees of freedom and R² calculations for LOESS/GAM
 
 ###########################
 # remove missing values (only in R, do this with filters in Tableau)
@@ -302,23 +304,19 @@ if(modelType == "loess/gam") {
       paste0(trendLine, modelSummary)
 # linear model cases
 } else if(substr(modelType, 1, 2) == "lm") {
-      # set formula
+      ### set formula ###
+      # simple model case
       lm_formula <- if(modelType == "lm") {
-            # simple model case
             y ~ x
+      # log case
       } else if(substr(modelType, 4, 6) == "log") {
-            # log case
             y ~ log(x)
+      # polynomial case
       } else if(substr(modelType, 4, 6) == "pol") {
-            # polynomial case (with degree 2 to 4)
-            degree <- as.numeric(substr(modelType, 8, 8))
-            if(degree == 2) {
-                 y ~ x + I(x^2) 
-            } else if(degree == 3) {
-                 y ~ x + I(x^2) + I(x^3) 
-            } else if(degree == 4) {
-                 y ~ x + I(x^2) + I(x^3) + I(x^4)
-            }
+            # parse degree, evaluate orthogonal polynomials and return formula
+            rank <- as.numeric(substring(modelType, 8))
+            poly_x <- poly(x, degree=rank, raw=FALSE)
+            y ~ poly_x
       }
       # compute linear model with chosen formula
       model <- lm(lm_formula)
@@ -362,6 +360,10 @@ Ensuite pour ajouter le tout dans la vue :
 3. glissez __Valeurs de mesures__ en lignes et créez un axe double (en synchronisant les axes)  
 4. glissez __Noms de mesures__ en couleur dans le repère __Valeurs de mesures__, attribuez une couleur au champ __fit__ et une autre aux champs __lrw__ et __upr__  
 5. enfin vous pouvez placer __summary__ en infobulle  
+
+A ce stade votre vue devrait ressembler à la capture d'écran ci-dessous.  
+
+![Nuage de points dynamique dans Tableau, avec courbe de tendance](figures/courbe_de_tendance.png)  
 <br>  
 
 #### Densités marginales
@@ -386,6 +388,7 @@ n_dens <- 2^ceiling(log2(size))
 # choose smoothing bandwidth for the Gaussian kernel density estimator
 bw_dens <- bw.nrd0(vec) 
 # select the left and right-most points of the axis at which the density is to be estimated
+# this will be either 3 times the bandwidth outside of the vector range, or axisMin/axisMax
 from_dens <- min(vec) - 3 * bw_dens
 if(from_dens < axisMin) {from_dens <- axisMin}
 to_dens <- max(vec) + 3 * bw_dens
@@ -395,8 +398,8 @@ if(to_dens > axisMax) {to_dens <- axisMax}
 dens <- density(vec, bw = bw_dens, kernel = "gaussian", n = n_dens, from = from_dens, to = to_dens)
 
 # perform cubic spline interpolation in order to have a number of points equal to the sample size
-# (we use sample size minus two because we need to have a zero values on the left and right ends
-# in order to draw polygons in Tableau)
+# (we use sample size minus two because we need to have zero values on the left and right ends in
+# order to draw polygons in Tableau)
 coords <- spline(dens$x, dens$y, n = size - 2)
 coords <- cbind(c(coords$x[1], coords$x, coords$x[size - 2]), 
                 c(coords$y[1], coords$y, coords$y[size - 2]), 
