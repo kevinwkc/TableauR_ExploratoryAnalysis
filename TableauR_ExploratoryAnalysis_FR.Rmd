@@ -160,7 +160,6 @@ g3 <- ggplot(graphData, aes(x=axisY, colour=factor(colDim), fill=factor(colDim))
   myTheme(plot.margin=unit(c(0, 0, 2.1, 0), "lines"))
 
 # arrange plots
-remove(graphData, axisNames)
 grid.arrange(arrangeGrob(g2, gText, ncol=2, widths=c(3, 1)), 
              arrangeGrob(g1, g3, ncol=2, widths=c(3, 1)), 
              heights=c(1, 3))
@@ -190,38 +189,36 @@ Notez que j'utilise un _LOD_ de type _FIXED_ pour pouvoir faire du champ __Coule
 ![Nuage de points dynamique dans Tableau](figures/nuage_de_points.png)  
 <br>  
 
-Passons à la courbe de tendance. Tableau propose déjà une solution, cependant l'idéal serait de pouvoir ajouter d'autres possibilités, comme la régression LOESS par exemple. Pour cela on va utiliser un paramètre permettant de choisir le type de modèle, et un script R pour réaliser les calculs. Dans cet exemple, je propose une régression LOESS (ou [GAM](https://en.wikipedia.org/wiki/Generalized_additive_model) s'il y a plus de 1500 points), ou une régression linéaire (modèle simple, logarithmique, ou polynomial de degré 2, 3 ou 4). Le paramètre se nomme __Type de modèle__.  
+Passons à la courbe de tendance. Tableau propose déjà une solution, cependant l'idéal serait de pouvoir ajouter d'autres possibilités, comme la régression LOESS par exemple. Pour cela on va utiliser un paramètre permettant de choisir le type de modèle, et un script R pour réaliser les calculs. Dans cet exemple, je propose une régression LOESS, un modèle [GAM](https://en.wikipedia.org/wiki/Generalized_additive_model), ou une régression linéaire (modèle simple, logarithmique, ou polynomial de degré 2, 3 ou 4). Le paramètre se nomme __Type de modèle__.  
 
-Notons deux points pour cette section. D'abord, je ne prends pas en compte les niveaux de la dimension qui détermine la couleur : on souhaite afficher une seule courbe de tendance afin de ne pas surcharger le graphique, un modèle simple fera l'affaire. Ensuite, je souhaite non seulement obtenir la courbe de tendance, mais aussi un intervalle de confiance (95%). Je souhaite également obtenir des indicateurs sur la qualité de la régression. Pour éviter de faire appel plusieurs fois à R, je concatène tous les résultats dans un seul champ de type chaîne de caractère que je pourrai ensuite parser dans Tableau.  
+Notons deux points pour cette section. D'abord, je ne prends pas en compte les niveaux de la dimension qui détermine la couleur : on souhaite afficher une seule courbe de tendance afin de ne pas surcharger le graphique, un modèle simple fera l'affaire. Ensuite, je souhaite non seulement obtenir la courbe de tendance, mais aussi un intervalle de confiance (95%). Je souhaite également obtenir le résumé du modèle, obtenu avec la fonction `summary`. Pour éviter de faire appel plusieurs fois à R, je concatène tous les résultats dans un seul champ de type chaîne de caractère que je pourrai ensuite parser dans Tableau.  
 
-Le code est améliorable notamment au niveau de sa modularité... Je m'en occuperai peut être ultérieurement pour une mise à jour de l'article.  
-
-Le format final est donc : _lower___<___fit___>___upper___|1|___Residual standard error___|2|___Multiple R-squared___|3|___Adjusted R-squared___|4|___F-test p-value_  
+Le format final est donc : _lower___<___fit___>___upper___|S|___summary_  
 ```{r Tableau_model, results="hide"}
 # Tableau variables
 # values are given as an example here, replace with args in Tableau
 x <- insertion$femmes
 y <- insertion$salaire_net_median_des_emplois_a_temps_plein
-modelType <- "loess/gam" # as an example
+modelType <- "lm_pol_2" # as an example
 
-# fixed arguments
+# fixed arguments and calculated variables
 confLvl <- 0.95 # confidence interval
-loessLimit <- 1500 # n limit for computing LOESS
+loessLimit <- 5000 # n limit for computing LOESS
+n <- length(y)
+modelType <- unlist(strsplit(modelType, "_", fixed = TRUE))
 
-# TODO: fix degrees of freedom and R² calculations for LOESS/GAM
-
-###########################
 # remove missing values (only in R, do this with filters in Tableau)
 complete <- complete.cases(x, y)
 x <- x[complete]
 y <- y[complete]
-##########################
+
 
 ###### choose model ######
-# LOESS/GAM case
-if(modelType == "loess/gam") {
+
+# LOESS/GAM cases
+if(modelType[1] == "loess/gam") {
       # LOESS if dataset size is less than the limit
-      if(length(y) <= loessLimit) {
+      if(n <= loessLimit) {
             model <- loess(y ~ x)
             pred <- predict(model, se=TRUE)
             # prepare data for trend line
@@ -232,68 +229,46 @@ if(modelType == "loess/gam") {
                   ">",
                   pred$fit + (qt(1 - (1 - confLvl) / 2, pred$df) * pred$se)
             )
-            # prepare data for summary
-            SSE <- sum((y - pred$fit)^2) # sum of squares for error
-            SST <- sum((y - mean(y))^2) # sum of squares total
-            SSM <- sum((pred$fit - mean(y))^2) # sum of squares for model
-            DFE <- pred$df # effective degrees of freedom
-            r.squared <- 1 - (SSE / SST)
-            adj.r.squared <- r.squared - (1 - r.squared) * (1 / (DFE - 1))
-            fStat <- (SSM/1) / (SSE/DFE) # F-test
-            pValue <- pf(fStat, 1, DFE, lower.tail=FALSE)
       } else {
-            # GAM if dataset too big
-            if (!require("mgcv")) {
-                  install.packages("mgcv")
-                  require(mgcv)
-            }
-            model <- gam(y ~ ti(x))
-            pred <- predict(model, se.fit=TRUE)
-            DFE <- length(y) - 1 # degrees of freedom
-            # prepare data for trend line
-            trendLine <- paste0(
-                  pred$fit - (qt(1 - (1 - confLvl) / 2, DFE) * pred$se.fit), 
-                  "<",
-                  pred$fit, 
-                  ">",
-                  pred$fit + (qt(1 - (1 - confLvl) / 2, DFE) * pred$se.fit)
-            )
-            # prepare data for summary
-            SSE <- sum((y - pred$fit)^2) # sum of squares for error
-            SST <- sum((y - mean(y))^2) # sum of squares total
-            SSM <- sum((pred$fit - mean(y))^2) # sum of squares for model
-            r.squared <- 1 - (SSE / SST)
-            adj.r.squared <- r.squared - (1 - r.squared) * (1 / (DFE - 1))
-            fStat <- (SSM/1) / (SSE/DFE) # F-test
-            pValue <- pf(fStat, 1, DFE, lower.tail=FALSE)
+            # set modelType to GAM if dataset is too big
+            modelType <- "gam"
       }
-      # return results to Tableau
-      modelSummary <- paste0(
-      "|1|Residual standard error: ", formatC(pred$residual.scale, digits=1, format="f"), 
-      " on ", formatC(pred$df, digits=1, format="f"), " degrees of freedom", 
-      "|2|Multiple R-squared: ",  formatC(r.squared, digits=4, format="f"),
-      "|3|Adjusted R-squared: ",  formatC(adj.r.squared, digits=4, format="f"),
-      "|4|F-test p-value: ",  formatC(pValue, digits=4, format="e")
+      
+} else if(modelType[1] == "gam") {
+      # if modelType was set to "gam", or to "loess/gam" with n > loessLimit, then compute GAM model
+      if (!require(mgcv)) {
+            install.packages("mgcv")
+            require(mgcv)
+      }
+      # compute gam model...
+      model <- gam(y ~ s(x, bs = "cs")) # smoothing basis: cubic regression splines
+      pred <- predict(model, type = "link", se.fit=TRUE)
+      DFE <- n - 1 # degrees of freedom
+      # prepare data for trend line
+      trendLine <- paste0(
+            model$family$linkinv(pred$fit - ((qt(1 - (1 - confLvl) / 2, DFE) * pred$se.fit))), 
+            "<",
+            pred$fit, 
+            ">",
+            model$family$linkinv(pred$fit + ((qt(1 - (1 - confLvl) / 2, DFE) * pred$se.fit)))
       )
-      paste0(trendLine, modelSummary)
+
 # linear model cases
-} else if(substr(modelType, 1, 2) == "lm") {
-      ### set formula ###
-      # simple model case
-      lm_formula <- if(modelType == "lm") {
-            y ~ x
-      # log case
-      } else if(substr(modelType, 4, 6) == "log") {
-            y ~ log(x)
-      # polynomial case
-      } else if(substr(modelType, 4, 6) == "pol") {
-            # parse degree, evaluate orthogonal polynomials and return formula
-            rank <- as.numeric(substring(modelType, 8))
-            poly_x <- poly(x, degree=rank, raw=FALSE)
-            y ~ poly_x
-      }
+} else if(modelType[1] == "lm") {
       # compute linear model with chosen formula
-      model <- lm(lm_formula)
+      # simple model case
+      model <- if(modelType[2] == "lin") {
+            lm(y ~ x)
+      # log case
+      } else if(modelType[2] == "log") {
+            lm(y ~ log(x))
+      # polynomial case
+      } else if(modelType[2] == "pol") {
+            # parse degree, evaluate orthogonal polynomials and return formula
+            dg <- as.numeric(modelType[3])
+            poly_x <- poly(x, degree=dg, raw=FALSE)
+            lm(y ~ poly_x)
+      }
       pred <- predict(model, interval="confidence", level=confLvl)
       # prepare data for trend line
       trendLine <- paste0(
@@ -303,20 +278,14 @@ if(modelType == "loess/gam") {
             ">",
             pred[, "upr"]
       )
-      # prepare data for summary
-      mSum <- summary(model)
-      # return results to Tableau
-      modelSummary <- paste0(
-            "|1|Residual standard error: ", formatC(mSum$sigma, digits=1, format="f"), 
-            " on ", mSum$df[2], " degrees of freedom", 
-            "|2|Multiple R-squared: ",  formatC(mSum$r.squared, digits=4, format="f"),
-            "|3|Adjusted R-squared: ",  formatC(mSum$adj.r.squared, digits=4, format="f"),
-            "|4|F-test p-value: ",  formatC(
-                  pf(mSum$fstatistic[1], mSum$fstatistic[2], mSum$fstatistic[3], lower.tail=FALSE), 
-                  digits=4, format="e")
-      )
-      paste0(trendLine, modelSummary)
 }
+
+# capture model summary output
+# Tableau will convert "\n" to new lines
+modelSummary <- paste0(capture.output(summary(model)), collapse = "\n")
+
+# return data to tableau
+paste0(trendLine, "|S|", modelSummary)
 ```
 <br>  
 
@@ -325,7 +294,7 @@ Quelques modifications minimes permettent d'interfacer ce code dans Tableau (cha
 * le champ __lwr__ pour la limite basse de la courbe de tendance  
 * le champ __fit__ pour la courbe de tendance  
 * le champ __upr__ pour la limite haute de la courbe de tendance  
-* le champ __summary__ pour les détails du modèle  
+* le champ __summary__ pour le résumé du modèle  
 
 Ensuite pour ajouter le tout dans la vue :  
 
@@ -341,11 +310,15 @@ A ce stade votre vue devrait ressembler à la capture d'écran ci-dessous.
 <br>  
 
 #### Densités marginales
-Sur notre nuage de points, les densité marginales sont les fonctions de densité de nos composantes X et Y. Par exemple si l'on prend une ligne au hasard dans notre jeu de données (soit une discipline pour une année et un établissement précis, valeurs nulles exclues) et que X est le pourcentage de femmes, l'aire sous la fonction de densité de X entre deux valeurs est la probabilité que le pourcentage de femmes soit compris entre ces deux valeurs. Ainsi si l'aire est de 0.25 entre 0% et 50%, cela signifie qu'il y a 25% de chances qu'il y ait moins d'une femme sur deux dans la discipline observée.  
+Sur notre nuage de points, les densité marginales sont les fonctions de densité de nos composantes X et Y. Par exemple si l'on prend une ligne au hasard dans notre jeu de données (soit une discipline pour une année et un établissement précis, valeurs nulles exclues) et que X est le pourcentage de femmes, l'aire sous la fonction de densité de X entre deux valeurs est la probabilité que le pourcentage de femmes soit compris entre ces deux valeurs. Ainsi si l'aire est de 0.4 entre 0% et 50%, cela signifie qu'il y a 40% de chances qu'il y ait moins d'une femme sur deux dans la discipline observée. Afficher les densités marginales aux marges de notre nuage de points nous permet de visualiser la répartition des points sur les axes X et Y, même lorsque le graphique est très chargé et que de nombreux points se retrouvent superposés.  
 
-Ainsi, afficher les densités marginales aux marges de notre nuage de points nous permet de visualiser la répartition des points sur les axes X et Y, même lorsque le graphique est très chargé et que de nombreux points se retrouvent superposés.  
+Avant de construire ces courbes, il nous faut régler le problème de l'alignement. Les axes du nuage de points doivent être parfaitement alignés avec l'axe correspondant au niveau des densités marginales. Comme ce sont des vues différentes que nous allons intégrer dans un tableau de bord, il n'est pas possible de synchroniser les axes. À l'heure actuelle il n'est pas non plus possible de fixer les limites de l'axe dynamiquement dans Tableau, comme on le ferait en R (e.g. _xlim_ et _ylim_). Mais pas de panique ! Comme souvent avec Tableau, il existe une astuce. Nous allons créer 4 champs calculés qui nous permettront de placer des lignes de référence juste avant et après les limites de nos données. Tableau fait en sorte de toujours pouvoir afficher les lignes de référence dans la vue, cela nous permettra de forcer la plage des axes.  
 
-...
+La logique pour le calcul de ces champs est la suivante : on prend le minimum (ou le maximum) des données sur l'axe, et on y retranche (ou ajoute) une valeur proportionnelle à la plage des données. Un paramètre, __Facteur d'ajustement des axes__, nous permet de régler l'éloignement des lignes de référence par rapport aux données.  Les champs en question sont __Axe X max__, __Axe X min__, __Axe Y max__, __Axe Y min__.  J'utilise un _LOD Exclude_ pour ignorer le partitionnement par couleur. Vous pouvez déjà placer ces lignes de référence aux emplacements correspondants sur le nuage de points. Pour cela glissez les champs en détail et ajoutez des lignes de référence personnalisées.  
+
+Passons au code R. Par défaut, les courbes de densité vont légèrement au delà de la plage des données, cela permet de faire tomber la densité à une valeur proche de zéro aux extrémités de la courbe. Cependant, nous ne voulons pas que les courbes dépassent le minimum ou le maximum de nos axes. Je passe donc ces valeurs à R pour empêcher ce comportement dans les cas ou la courbe dépasseraient les limites de l'axe. La fonction `density` me permet ensuite d'obtenir une approximation satisfaisante de la densité.  
+
+Pour les densités marginales sur l'axe Y, je vais avoir besoin de dire à Tableau de relier les points du bas vers le haut, et non de la gauche vers la droite. Pour cela j'utilise le chemin et un _index_. En revanche les zones dans Tableau ne permettent pas de spécifier un chemin, je vais donc devoir créer un polygone pour colorier l'aire sous la courbe. L'astuce est d'ajouter un zéro aux deux extrémité du vecteur de densités que je retourne à Tableau, afin que le polygone soit collé à l'axe. Etant donné que Tableau attend autant de valeurs en sortie qu'il en fourni en entrée, je vais interpoler _n-2_ points avec la fonction `spline`, puis ajouter soit zéro au début et à la fin du vecteur pour les polygones, soit répéter la valeur de chaque extrémité pour les courbes. Je retourne aussi les coordonnées de l'axe auxquelles les densités sont estimées. Le tout sera parsé dans Tableau, comme pour la courbe de tendance.  
 ```{r Tableau_density, results="hide"}
 # Tableau variables
 # values are given as an example here, replace with args in Tableau
@@ -379,9 +352,16 @@ coords <- cbind(c(coords$x[1], coords$x, coords$x[size - 2]),
                 c(0, coords$y, 0))
 
 # return as a string that will be parsed in tableau: x, y for lines, y for polygons
-paste0(coords[,1], "l", coords[,2], "p", coords[,3])
+paste0(coords[,1], "|L|", coords[,2], "|P|", coords[,3])
 ```
 <br>  
 
-#### Alignement des axes et agencement des vues
+De retour dans Tableau, je créé deux champs calculés de type _SCRIPT_STR_, pour les densités marginales de X et de Y. Chaque champ est parsé pour obtenir les coordonnées des points sur l'axe en question ainsi que les estimations de densité pour les lignes et les polygones (ces champs sont rassemblés dans le dossier _Courbes de densité_). On y ajoute l'_index_ pour le chemin et les lignes de référence pour l'alignement des axes.  
+
+Le resultat est le suivant pour l'axe des X. Remarquez que si vous choisissez une dimension pour les couleurs, cela fonctionne parfaitement !  
+
+![Courbes de densité pour l'axe des X](figures/courbe_de_densite.png)  
+<br>  
+
+#### Agencement des vues dans un tableau de bord
 ...  
