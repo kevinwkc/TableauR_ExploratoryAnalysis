@@ -4,6 +4,7 @@ This is the Github repository for my article on how to build an exploratory anal
 * English version TBD  
 * [French version](http://htmlpreview.github.com/?https://github.com/simonkth/TableauR_ExploratoryAnalysis/blob/master/TableauR_ExploratoryAnalysis_FR.html)  
   
+
 This repository contains:  
 * the raw _.Rmd_ file containing the R code chunks, the _.md_ and _.html_ files compiled with knitr  
 	+ English version TBD  
@@ -12,6 +13,7 @@ This repository contains:
 * _TableauR_ExploratoryAnalysis_FR_, the french version for the Tableau workbook (english version TBD)  
 * the dataset in the _data_ folder  
   
+
 Notes on the _Rserve_ directory:  
 * _Rserve.cmd_: double-clicking on this file will start a R session and run the code in _Rserve_run.R_  
 * _Rserve_run.R_: this file contains the R script that will start Rserve  
