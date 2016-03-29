@@ -64,9 +64,9 @@ insertion <- fread("./data/insertion_raw.csv", sep=";", encoding="UTF-8",
 # or if the response rate is too low (taux_de_reponse < 30)
 # also remove fields that we don't want to keep in Tableau
 insertion <- insertion %>% 
-      filter(nombre_de_reponses >= 30, taux_de_reponse >= 30, 
+      dplyr::filter(nombre_de_reponses >= 30, taux_de_reponse >= 30, 
              numero_de_l_etablissement != "UNIV") %>%
-      select(-c(numero_de_l_etablissement, code_de_l_academie, code_du_domaine, 
+      dplyr::select(-c(numero_de_l_etablissement, code_de_l_academie, code_du_domaine, 
                 code_de_la_discipline, remarque, cle_etab, cle_disc))
 
 # export data in csv for Tableau
@@ -336,7 +336,7 @@ A ce stade votre vue devrait ressembler à la capture d'écran ci-dessous.
 <br>  
 
 #### Densités marginales
-Sur notre nuage de points, les densité marginales sont les fonctions de densité de nos composantes X et Y. Par exemple si l'on prend une ligne au hasard dans notre jeu de données (soit une discipline pour une année et un établissement précis, valeurs nulles exclues) et que X est le pourcentage de femmes, l'aire sous la fonction de densité de X entre deux valeurs est la probabilité que le pourcentage de femmes soit compris entre ces deux valeurs. Ainsi si l'aire est de 0.4 entre 0% et 50%, cela signifie qu'il y a 40% de chances qu'il y ait moins d'une femme sur deux dans la discipline observée. Afficher les densités marginales aux marges de notre nuage de points nous permet de visualiser la répartition des points sur les axes X et Y, même lorsque le graphique est très chargé et que de nombreux points se retrouvent superposés.  
+Sur notre nuage de points, les densité marginales sont les fonctions de densité de nos composantes __X__ et __Y__. Par exemple si l'on prend une ligne au hasard dans notre jeu de données (soit une discipline pour une année et un établissement précis, valeurs nulles exclues) et que __X__ est le pourcentage de femmes, l'aire sous la fonction de densité de __X__ entre deux valeurs est la probabilité que le pourcentage de femmes soit compris entre ces deux valeurs. Ainsi si l'aire est de 0.4 entre 0% et 50%, cela signifie qu'il y a 40% de chances qu'il y ait moins d'une femme sur deux dans la discipline observée. Afficher les densités marginales aux marges de notre nuage de points nous permet de visualiser la répartition des points sur les axes __X__ et __Y__, même lorsque le graphique est très chargé et que de nombreux points se retrouvent superposés.  
 
 Avant de construire ces courbes, il nous faut régler le problème de l'alignement. Les axes du nuage de points doivent être parfaitement alignés avec l'axe correspondant au niveau des densités marginales. Comme ce sont des vues différentes que nous allons intégrer dans un tableau de bord, il n'est pas possible de synchroniser les axes. À l'heure actuelle il n'est pas non plus possible de fixer les limites de l'axe dynamiquement dans Tableau, comme on le ferait en R (e.g. _xlim_ et _ylim_). Mais pas de panique ! Comme souvent avec Tableau, il existe une astuce. Nous allons créer 4 champs calculés qui nous permettront de placer des lignes de référence juste avant et après les limites de nos données. Tableau fait en sorte de toujours pouvoir afficher les lignes de référence dans la vue, cela nous permettra de forcer la plage des axes.  
 
@@ -344,7 +344,7 @@ La logique pour le calcul de ces champs est la suivante : on prend le minimum (o
 
 Passons au code R. Par défaut, les courbes de densité vont légèrement au delà de la plage des données, cela permet de faire tomber la densité à une valeur proche de zéro aux extrémités de la courbe. Cependant, nous ne voulons pas que les courbes dépassent le minimum ou le maximum de nos axes. Je passe donc ces valeurs à R pour empêcher ce comportement dans les cas ou la courbe dépasseraient les limites de l'axe. La fonction `density` me permet ensuite d'obtenir une approximation satisfaisante de la densité.  
 
-Pour les densités marginales sur l'axe Y, je vais avoir besoin de dire à Tableau de relier les points du bas vers le haut, et non de la gauche vers la droite. Pour cela j'utilise le chemin et un _index_. En revanche les zones dans Tableau ne permettent pas de spécifier un chemin, je vais donc devoir créer un polygone pour colorier l'aire sous la courbe. L'astuce est d'ajouter un zéro aux deux extrémité du vecteur de densités que je retourne à Tableau, afin que le polygone soit collé à l'axe. Etant donné que Tableau attend autant de valeurs en sortie qu'il en fourni en entrée, je vais interpoler _n-2_ points avec la fonction `spline`, puis ajouter soit zéro au début et à la fin du vecteur pour les polygones, soit répéter la valeur de chaque extrémité pour les courbes. Je retourne aussi les coordonnées de l'axe auxquelles les densités sont estimées. Le tout sera parsé dans Tableau, comme pour la courbe de tendance.  
+Pour les densités marginales sur l'axe __Y__, je vais avoir besoin de dire à Tableau de relier les points du bas vers le haut, et non de la gauche vers la droite. Pour cela j'utilise le chemin et un _index_. En revanche les zones dans Tableau ne permettent pas de spécifier un chemin, je vais donc devoir créer un polygone pour colorier l'aire sous la courbe. L'astuce est d'ajouter un zéro aux deux extrémité du vecteur de densités que je retourne à Tableau, afin que le polygone soit collé à l'axe. Etant donné que Tableau attend autant de valeurs en sortie qu'il en fourni en entrée, je vais interpoler _n-2_ points avec la fonction `spline`, puis ajouter soit zéro au début et à la fin du vecteur pour les polygones, soit répéter la valeur de chaque extrémité pour les courbes. Je retourne aussi les coordonnées de l'axe auxquelles les densités sont estimées. Le tout sera parsé dans Tableau, comme pour la courbe de tendance.  
 
 ```r
 # Tableau variables
@@ -383,9 +383,9 @@ paste0(coords[,1], "|L|", coords[,2], "|P|", coords[,3])
 ```
 <br>  
 
-De retour dans Tableau, je créé deux champs calculés de type _SCRIPT_STR_, pour les densités marginales de X et de Y. Chaque champ est parsé pour obtenir les coordonnées des points sur l'axe en question ainsi que les estimations de densité pour les lignes et les polygones (ces champs sont rassemblés dans le dossier _Courbes de densité_). On y ajoute l'_index_ pour le chemin et les lignes de référence pour l'alignement des axes.  
+De retour dans Tableau, je créé deux champs calculés de type _SCRIPT_STR_, pour les densités marginales de __X__ et de __Y__. Chaque champ est parsé pour obtenir les coordonnées des points sur l'axe en question ainsi que les estimations de densité pour les lignes et les polygones (ces champs sont rassemblés dans le dossier _Courbes de densité_). On y ajoute __Index__ pour le chemin et les lignes de référence pour l'alignement des axes.  
 
-Le resultat est le suivant pour l'axe des X. Remarquez que si vous choisissez une dimension pour les couleurs, cela fonctionne parfaitement !  
+Le resultat est le suivant pour __X__ (pour __Y__ il suffira de permuter les axes de la vue). Remarquez que si vous choisissez une dimension pour les couleurs, cela fonctionne parfaitement !   
 
 ![Courbes de densité pour l'axe des X](figures/courbe_de_densite.png)  
 <br>  
