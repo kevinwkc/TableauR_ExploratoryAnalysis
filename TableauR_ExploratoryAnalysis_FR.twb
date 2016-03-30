@@ -695,8 +695,8 @@
       </column-instance>
       <column-instance column='[Calculation_75153886089605132]' derivation='User' name='[usr:Calculation_75153886089605132:qk]' pivot='key' type='quantitative'>
         <table-calc ordering-type='Rows' />
-        <table-calc field='[textscan.033rnfa0qr6jju119agoc1gq4wqi].[Calculation_917327012510846978]' ordering-type='Rows' />
         <table-calc field='[textscan.033rnfa0qr6jju119agoc1gq4wqi].[lwr (copie)]' ordering-type='Rows' />
+        <table-calc field='[textscan.033rnfa0qr6jju119agoc1gq4wqi].[Calculation_917327012510846978]' ordering-type='Rows' />
       </column-instance>
       <column-instance column='[Calculation_917327012521226245]' derivation='User' name='[usr:Calculation_917327012521226245:qk:1]' pivot='key' type='quantitative'>
         <table-calc ordering-type='Columns' />
@@ -800,7 +800,7 @@
         <folder-item name='[Calculation_75153886018215939]' type='field' />
         <folder-item name='[Calculation_75153886020427781]' type='field' />
       </folder>
-      <layout dim-ordering='alphabetic' dim-percentage='0.299625' measure-ordering='alphabetic' measure-percentage='0.406991' parameter-percentage='0.293383' show-structure='false' user-set-layout='true' />
+      <layout dim-ordering='alphabetic' dim-percentage='0.202247' measure-ordering='alphabetic' measure-percentage='0.599251' parameter-percentage='0.198502' show-structure='false' user-set-layout='true' />
       <style>
         <style-rule element='mark'>
           <encoding attr='color' field='[none:Calculation_673851157567737861:nk]' type='palette'>
@@ -962,23 +962,6 @@
             </map>
             <map to='#ffbb78'>
               <bucket>&quot;Rennes&quot;</bucket>
-            </map>
-          </encoding>
-          <encoding attr='color' field='[usr:Calculation_75153886019072004:nk]' type='palette'>
-            <map to='#29a03c'>
-              <bucket>&quot;***&quot;</bucket>
-            </map>
-            <map to='#82a93c'>
-              <bucket>&quot;**&quot;</bucket>
-            </map>
-            <map to='#adb828'>
-              <bucket>&quot;*&quot;</bucket>
-            </map>
-            <map to='#d23e4e'>
-              <bucket>&quot; &quot;</bucket>
-            </map>
-            <map to='#ff810e'>
-              <bucket>&quot;.&quot;</bucket>
             </map>
           </encoding>
           <encoding attr='color' field='[:Measure Names]' type='palette'>
@@ -1838,8 +1821,8 @@
             </column-instance>
             <column-instance column='[Calculation_75153886089605132]' derivation='User' name='[usr:Calculation_75153886089605132:qk]' pivot='key' type='quantitative'>
               <table-calc ordering-type='Rows' />
-              <table-calc field='[textscan.033rnfa0qr6jju119agoc1gq4wqi].[Calculation_917327012510846978]' ordering-type='Rows' />
               <table-calc field='[textscan.033rnfa0qr6jju119agoc1gq4wqi].[lwr (copie)]' ordering-type='Rows' />
+              <table-calc field='[textscan.033rnfa0qr6jju119agoc1gq4wqi].[Calculation_917327012510846978]' ordering-type='Rows' />
             </column-instance>
             <column-instance column='[fit (copie)]' derivation='User' name='[usr:fit (copie):qk]' pivot='key' type='quantitative'>
               <table-calc ordering-type='Rows' />

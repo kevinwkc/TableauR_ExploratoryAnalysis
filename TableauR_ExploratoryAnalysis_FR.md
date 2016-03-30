@@ -13,7 +13,7 @@
 <br>  
 
 ### Prérequis
-Tous des fichiers sont disponible dans ce [répertoire Github](https://github.com/simonkth/TableauR_ExploratoryAnalysis).  
+Tous les fichiers sont disponibles dans ce [répertoire Github](https://github.com/simonkth/TableauR_ExploratoryAnalysis).  
 Si vous souhaitez reproduire cet outil, assurez-vous de remplir les prérequis suivants avant de continuer :  
 
 * avoir installé une version de Tableau Desktop supportant l'intégration avec R (8.1 ou supérieure, 9.3 recommandée)  
@@ -25,15 +25,11 @@ Si vous souhaitez reproduire cet outil, assurez-vous de remplir les prérequis s
       + pour une installation plus durable et plus flexible, suivez [ces instructions](http://kb.tableau.com/articles/knowledgebase/r-implementation-notes?lang=fr-fr)  
 <br>  
 
-# ...
-...  
-<br>  
-
 # Jeu de données
 ### Origine et description
 Le jeu de données que nous allons utiliser pour cette démonstration provient de la plateforme ouverte des [données publiques françaises](https://www.data.gouv.fr/fr/). Il contient un certain nombre d'indicateurs concernant l'insertion professionnelle des diplômés de Master en universités, fournis par le site de l'[enseignement supérieur français](www.enseignementsup-recherche.gouv.fr).  
 
-Le jeu de données brut et sa documentation sont disponible [ici](https://www.data.gouv.fr/fr/datasets/insertion-professionnelle-des-diplomes-de-master-en-universites-et-etablissements-assimil-0/).  
+Le jeu de données brut et sa documentation sont disponibles [ici](https://www.data.gouv.fr/fr/datasets/insertion-professionnelle-des-diplomes-de-master-en-universites-et-etablissements-assimil-0/).  
 <br>  
 
 ### Nettoyage et préparation avec R
@@ -112,16 +108,12 @@ _Dernière date de téléchargement du jeu de données : 2016-03-30 11:41:36._
 <br>  
 
 # Développement des outils d'analyse
-### ...
-...  
-<br>  
-
 ### Nuage de points et densitées marginales
 L'un de mes premiers réflexes lorsque j'explore un nouveau jeu de données est de rechercher des relations entre les différentes variables. Pour les variables quantitatives, le nuage de point est un incontournable. Sur ce type de graphique, j'ai également tendance à utiliser la couleur pour comparer les différents niveaux d'une variable qualitative (ou dimension).  
 
-Le problème avec les nuages de points, c'est qu'ils ont tendance à devenir rapidement illisibles lorsqu'il y a beaucoup d'éléments à afficher. Il est donc intéressant d'enrichir ces vues. On peut ainsi y ajouter différents éléments : une courbe de tendance, le résultat d'un test statistique, ou encore les densités marginales des nos variables...  
+Le problème avec les nuages de points, c'est qu'ils ont tendance à devenir rapidement illisibles lorsqu'il y a beaucoup d'éléments à afficher. Il est donc intéressant d'enrichir ces vues. On peut ainsi y ajouter différents éléments : une courbe de tendance, le résultat d'un test statistique, ou encore les densités marginales de nos variables...  
 
-Ci-dessous une petite démonstration rapide en R avec le package _ggplot2_. J'ai ajouté une courbe de régression [LOESS](https://en.wikipedia.org/wiki/Local_regression), le résultat d'un [test de corrélation de Pearson](https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient) ainsi que les [distributions marginales](https://en.wikipedia.org/wiki/Marginal_distribution) déclinées en couleur sur les différents domaines d'études proposés par nos universités. C'est une démonstration rapide, je n'ai donc pas pris la peine d'afficher la légende. Vous remarquerez aussi que cela demande beaucoup de code, et que l'alignement des différents éléments reste assez approximatif.  
+Ci-dessous une petite démonstration rapide en R avec le package _ggplot2_. J'ai ajouté une courbe de régression [LOESS](https://en.wikipedia.org/wiki/Local_regression), le résultat d'un [test de corrélation de Pearson](https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient) ainsi que les [distributions marginales](https://en.wikipedia.org/wiki/Marginal_distribution) déclinées en couleurs sur les différents domaines d'études proposés par nos universités. C'est une démonstration rapide, je n'ai donc pas pris la peine d'afficher la légende. Vous remarquerez aussi que cela demande beaucoup de code, et que l'alignement des différents éléments reste assez approximatif.  
 
 ```r
 # load packages for graphics
@@ -209,7 +201,7 @@ D'abord, n'oubliez pas de désactiver l'agrégation dans _Analyse_ $\rightarrow$
 * le paramètre __Ordonnée__ qui commande le champ __Y__  
 * les paramètres __Niveaux__ et __Niveaux maximum__ qui commandent les champs __Niveaux pour couleur__ et __Couleur__  
 
-Grâce aux deux premiers paramètres, je peux choisir les mesures que je souhaite placer en abscisse et en ordonnée. Quelques précisions s'imposent pour le dernier point. Grâce à __Niveaux__, je peux choisir une dimension pour déterminer la couleur des points (via le champ __Niveaux pour couleur__). Cependant je ne contrôle pas le nombre de niveaux que contient cette dimension ! Par sécurité, je créé un nouveau couple paramètre / champ calculé (__Niveaux maximum__ et __Couleur__) qui va me permettre de n'afficher des couleurs que si le nombre de niveaux ne dépasse pas un certain seuil. C'est donc le champ __Couleur__ que je place sur mon repère des couleurs. En revanche, je peux utiliser le champ __Niveaux pour couleur__ pour filtrer ma dimension. Ainsi, bien qu'il y ait 28 niveaux pour la dimension __Académie__, si je la sélectionne puis que je filtre pour ne garder que 6 niveaux (et que __Niveaux maximum__ est fixé à 6), les académies que j'ai sélectionné vont bel et bien s'afficher en couleur. En revanche si j'ajoute une académie de trop à ma sélection, Tableau repasse sur une couleur unique.  
+Grâce aux deux premiers paramètres, je peux choisir les mesures que je souhaite placer en abscisse et en ordonnée. Quelques précisions s'imposent pour le dernier point. Grâce à __Niveaux__, je peux choisir une dimension pour déterminer la couleur des points (via le champ __Niveaux pour couleur__). Cependant je ne contrôle pas le nombre de niveaux que contient cette dimension ! Par sécurité, je crée un nouveau couple paramètre / champ calculé (__Niveaux maximum__ et __Couleur__) qui va me permettre de n'afficher des couleurs que si le nombre de niveaux ne dépasse pas un certain seuil. C'est donc le champ __Couleur__ que je place sur mon repère des couleurs. En revanche, je peux utiliser le champ __Niveaux pour couleur__ pour filtrer ma dimension. Ainsi, bien qu'il y ait 28 niveaux pour la dimension __Académie__, si je la sélectionne puis que je filtre pour ne garder que 6 niveaux (et que __Niveaux maximum__ est fixé à 6), les académies que j'ai sélectionnées vont bel et bien s'afficher en couleur. En revanche si j'ajoute une académie de trop à ma sélection, Tableau repasse sur une couleur unique.  
 
 Notez que j'utilise un _LOD_ de type _FIXED_ pour pouvoir faire du champ __Couleur__ une dimension. Cela sera important plus loin pour construire les densités marginales. De plus, le filtre __Niveaux pour couleur__ est placé en contexte afin de bien prendre en compte la diminution du nombre de niveaux lorsque j'en écarte certains. Je filtre également mes champs __X__ et __Y__ pour exclure les cas où les valeurs sont manquantes.  
 
@@ -218,7 +210,7 @@ Notez que j'utilise un _LOD_ de type _FIXED_ pour pouvoir faire du champ __Coule
 
 Passons à la courbe de tendance. Tableau propose déjà une solution, cependant l'idéal serait de pouvoir ajouter d'autres possibilités, comme la régression LOESS par exemple. Pour cela on va utiliser un paramètre permettant de choisir le type de modèle, et un script R pour réaliser les calculs. Dans cet exemple, je propose une régression LOESS, un modèle [GAM](https://en.wikipedia.org/wiki/Generalized_additive_model), ou une régression linéaire (modèle simple, logarithmique, ou polynomial de degré 2, 3 ou 4). Le paramètre se nomme __Type de modèle__.  
 
-Notons deux points pour cette section. D'abord, je ne prends pas en compte les niveaux de la dimension qui détermine la couleur : on souhaite afficher une seule courbe de tendance afin de ne pas surcharger le graphique, un modèle simple fera l'affaire. Ensuite, je souhaite non seulement obtenir la courbe de tendance, mais aussi un intervalle de confiance (95%). Je souhaite également obtenir le résumé du modèle, obtenu avec la fonction `summary`. Pour éviter de faire appel plusieurs fois à R, je concatène tous les résultats dans un seul champ de type chaîne de caractère que je pourrai ensuite parser dans Tableau.  
+Notons deux points pour cette section. D'abord, je ne prends pas en compte les niveaux de la dimension qui déterminent la couleur : on souhaite afficher une seule courbe de tendance afin de ne pas surcharger le graphique, un modèle simple fera l'affaire. Ensuite, je souhaite non seulement obtenir la courbe de tendance, mais aussi un intervalle de confiance (95%). Je souhaite également obtenir le résumé du modèle, obtenu avec la fonction `summary`. Pour éviter de faire appel plusieurs fois à R, je concatène tous les résultats dans un seul champ de type chaîne de caractère que je pourrai ensuite [parser](https://fr.wiktionary.org/wiki/parser) dans Tableau.  
 
 Le format final est donc : _lower___<___fit___>___upper___|S|___summary_  
 
@@ -227,7 +219,7 @@ Le format final est donc : _lower___<___fit___>___upper___|S|___summary_
 # values are given as an example here, replace with args in Tableau
 x <- insertion$femmes
 y <- insertion$salaire_net_median_des_emplois_a_temps_plein
-modelType <- "lm_pol_2" # as an example
+modelType <- "loess/gam" # as an example
 
 # fixed arguments and calculated variables
 confLvl <- 0.95 # confidence interval
@@ -338,7 +330,7 @@ A ce stade votre vue devrait ressembler à la capture d'écran ci-dessous.
 <br>  
 
 #### Densités marginales
-Sur notre nuage de points, les densité marginales sont les fonctions de densité de nos composantes __X__ et __Y__. Par exemple si l'on prend une ligne au hasard dans notre jeu de données (soit une discipline pour une année et un établissement précis, valeurs nulles exclues) et que __X__ est le pourcentage de femmes, l'aire sous la fonction de densité de __X__ entre deux valeurs est la probabilité que le pourcentage de femmes soit compris entre ces deux valeurs. Ainsi si l'aire est de 0.4 entre 0% et 50%, cela signifie qu'il y a 40% de chances qu'il y ait moins d'une femme sur deux dans la discipline observée. Afficher les densités marginales aux marges de notre nuage de points nous permet de visualiser la répartition des points sur les axes __X__ et __Y__, même lorsque le graphique est très chargé et que de nombreux points se retrouvent superposés.  
+Sur notre nuage de points, les densités marginales sont les fonctions de densité de nos composantes __X__ et __Y__. Par exemple si l'on prend une ligne au hasard dans notre jeu de données (soit une discipline pour une année et un établissement précis, valeurs nulles exclues) et que __X__ est le pourcentage de femmes, l'aire sous la fonction de densité de __X__ entre deux valeurs est la probabilité que le pourcentage de femmes soit compris entre ces deux valeurs. Ainsi si l'aire est de 0.4 entre 0% et 50%, cela signifie qu'il y a 40% de chances qu'il y ait moins d'une femme sur deux dans la discipline observée. Afficher les densités marginales aux marges de notre nuage de points nous permet de visualiser la répartition des points sur les axes __X__ et __Y__, même lorsque le graphique est très chargé et que de nombreux points se retrouvent superposés.  
 
 Avant de construire ces courbes, il nous faut régler le problème de l'alignement. Les axes du nuage de points doivent être parfaitement alignés avec l'axe correspondant au niveau des densités marginales. Comme ce sont des vues différentes que nous allons intégrer dans un tableau de bord, il n'est pas possible de synchroniser les axes. À l'heure actuelle il n'est pas non plus possible de fixer les limites de l'axe dynamiquement dans Tableau, comme on le ferait en R (e.g. _xlim_ et _ylim_). Mais pas de panique ! Comme souvent avec Tableau, il existe une astuce. Nous allons créer 4 champs calculés qui nous permettront de placer des lignes de référence juste avant et après les limites de nos données. Tableau fait en sorte de toujours pouvoir afficher les lignes de référence dans la vue, cela nous permettra de forcer la plage des axes.  
 
@@ -346,7 +338,7 @@ La logique pour le calcul de ces champs est la suivante : on prend le minimum (o
 
 Passons au code R. Par défaut, les courbes de densité vont légèrement au delà de la plage des données, cela permet de faire tomber la densité à une valeur proche de zéro aux extrémités de la courbe. Cependant, nous ne voulons pas que les courbes dépassent le minimum ou le maximum de nos axes. Je passe donc ces valeurs à R pour empêcher ce comportement dans les cas ou la courbe dépasseraient les limites de l'axe. La fonction `density` me permet ensuite d'obtenir une approximation satisfaisante de la densité.  
 
-Pour les densités marginales sur l'axe __Y__, je vais avoir besoin de dire à Tableau de relier les points du bas vers le haut, et non de la gauche vers la droite. Pour cela j'utilise le chemin et un _index_. En revanche les zones dans Tableau ne permettent pas de spécifier un chemin, je vais donc devoir créer un polygone pour colorier l'aire sous la courbe. L'astuce est d'ajouter un zéro aux deux extrémité du vecteur de densités que je retourne à Tableau, afin que le polygone soit collé à l'axe. Etant donné que Tableau attend autant de valeurs en sortie qu'il en fourni en entrée, je vais interpoler _n-2_ points avec la fonction `spline`, puis ajouter soit zéro au début et à la fin du vecteur pour les polygones, soit répéter la valeur de chaque extrémité pour les courbes. Je retourne aussi les coordonnées de l'axe auxquelles les densités sont estimées. Le tout sera parsé dans Tableau, comme pour la courbe de tendance.  
+Pour les densités marginales sur l'axe __Y__, je vais avoir besoin de dire à Tableau de relier les points du bas vers le haut, et non de la gauche vers la droite. Pour cela j'utilise le chemin et un _index_. En revanche les zones dans Tableau ne permettent pas de spécifier un chemin, je vais donc devoir créer un polygone pour colorier l'aire sous la courbe. L'astuce est d'ajouter un zéro aux deux extrémités du vecteur de densités que je retourne à Tableau, afin que le polygone soit collé à l'axe. Etant donné que Tableau attend autant de valeurs en sortie qu'il en fourni en entrée, je vais interpoler _n-2_ points avec la fonction `spline`, puis ajouter soit zéro au début et à la fin du vecteur pour les polygones, soit répéter la valeur de chaque extrémité pour les courbes. Je retourne aussi les coordonnées de l'axe auxquelles les densités sont estimées. Le tout sera parsé dans Tableau, comme pour la courbe de tendance.  
 
 ```r
 # Tableau variables
@@ -385,7 +377,7 @@ invisible(paste0(coords[,1], "|L|", coords[,2], "|P|", coords[,3]))
 ```
 <br>  
 
-De retour dans Tableau, je créé deux champs calculés de type _SCRIPT_STR_, pour les densités marginales de __X__ et de __Y__. Chaque champ est parsé pour obtenir les coordonnées des points sur l'axe en question ainsi que les estimations de densité pour les lignes et les polygones (ces champs sont rassemblés dans le dossier _Courbes de densité_). On y ajoute __Index__ pour le chemin et les lignes de référence pour l'alignement des axes.  
+De retour dans Tableau, je crée deux champs calculés de type _SCRIPT_STR_, pour les densités marginales de __X__ et de __Y__. Chaque champ est parsé pour obtenir les coordonnées des points sur l'axe en question ainsi que les estimations de densité pour les lignes et les polygones (ces champs sont rassemblés dans le dossier _Courbes de densité_). On y ajoute __Index__ pour le chemin et les lignes de référence pour l'alignement des axes.  
 
 Le résultat est le suivant pour __X__ (pour __Y__ il suffira de permuter les axes de la vue). Remarquez que si vous choisissez une dimension pour les couleurs, cela fonctionne parfaitement !  
 
@@ -421,3 +413,4 @@ Si vous avez suivi jusqu'ici, félicitation ! Votre produit fini devrait ressemb
 
 ![Nuage de points amélioré](figures/dashboard_nuage_densites.png)  
 <br>  
+
