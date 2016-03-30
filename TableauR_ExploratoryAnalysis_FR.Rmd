@@ -49,7 +49,7 @@ Si le travail de préparation des données ne vous intéresse pas et que vous so
 Sinon, n'oubliez pas de configurer au préalable votre répertoire de travail avec la fonction `setwd`.  
 
 Nous commençons par télécharger les données, puis nous réglons les problèmes de qualité des données. Nous supprimons ensuite les cas où le nombre de réponses est inférieur à 30, ainsi que ceux où le taux de réponse est inférieur à 30%. Nous sélectionnons également les colonnes qui nous intéressent. Enfin, nous exportons un fichier _.csv_ pour Tableau et nous affichons un échantillon des données.  
-```{r dl_clean, cache=TRUE, message=FALSE}
+```{r dl_clean, message=FALSE}
 # load packages
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(downloader, data.table, dplyr)
@@ -59,7 +59,8 @@ if(!file.exists("./data/insertion_raw.csv")) {
       if(!file.exists("./data")) {dir.create("./data")}
       dataUrl <- paste0("https://data.enseignementsup-recherche.gouv.fr/explore/dataset/", 
                         "fr-esr-insertion_professionnelle-master/download?format=csv")
-      download(dataUrl, dest="./data/insertion_raw.csv", mode="wb")
+
+      download(dataUrl, dest="./data/insertion_raw.csv", mode="wb", quiet=TRUE)
 } else message("The dataset had previously been downloaded.")
 
 # read data with fread(), with list of strings to ignore
@@ -85,6 +86,7 @@ remove(insertion_noNa)
 # show sample
 str(insertion)
 ```
+_Dernière date de téléchargement du jeu de données : `r file.mtime("./data/insertion_raw.csv")`._  
 <br>  
 
 # Développement des outils d'analyse
@@ -194,7 +196,7 @@ Passons à la courbe de tendance. Tableau propose déjà une solution, cependant
 Notons deux points pour cette section. D'abord, je ne prends pas en compte les niveaux de la dimension qui détermine la couleur : on souhaite afficher une seule courbe de tendance afin de ne pas surcharger le graphique, un modèle simple fera l'affaire. Ensuite, je souhaite non seulement obtenir la courbe de tendance, mais aussi un intervalle de confiance (95%). Je souhaite également obtenir le résumé du modèle, obtenu avec la fonction `summary`. Pour éviter de faire appel plusieurs fois à R, je concatène tous les résultats dans un seul champ de type chaîne de caractère que je pourrai ensuite parser dans Tableau.  
 
 Le format final est donc : _lower___<___fit___>___upper___|S|___summary_  
-```{r Tableau_model, results="hide"}
+```{r Tableau_model}
 # Tableau variables
 # values are given as an example here, replace with args in Tableau
 x <- insertion$femmes
@@ -296,7 +298,7 @@ Quelques modifications minimes permettent d'interfacer ce code dans Tableau (cha
 * le champ __upr__ pour la limite haute de la courbe de tendance  
 * le champ __summary__ pour le résumé du modèle  
 
-Ensuite pour ajouter le tout dans la vue :  
+Ignorez pour le moment les champs dont le nom commence par "cropped". Ensuite pour ajouter le tout dans la vue :  
 
 1. glissez __Noms de mesures__ dans les filtres  
 2. sélectionnez les champs __lwr__, __fit__ et __upr__  
@@ -319,7 +321,7 @@ La logique pour le calcul de ces champs est la suivante : on prend le minimum (o
 Passons au code R. Par défaut, les courbes de densité vont légèrement au delà de la plage des données, cela permet de faire tomber la densité à une valeur proche de zéro aux extrémités de la courbe. Cependant, nous ne voulons pas que les courbes dépassent le minimum ou le maximum de nos axes. Je passe donc ces valeurs à R pour empêcher ce comportement dans les cas ou la courbe dépasseraient les limites de l'axe. La fonction `density` me permet ensuite d'obtenir une approximation satisfaisante de la densité.  
 
 Pour les densités marginales sur l'axe __Y__, je vais avoir besoin de dire à Tableau de relier les points du bas vers le haut, et non de la gauche vers la droite. Pour cela j'utilise le chemin et un _index_. En revanche les zones dans Tableau ne permettent pas de spécifier un chemin, je vais donc devoir créer un polygone pour colorier l'aire sous la courbe. L'astuce est d'ajouter un zéro aux deux extrémité du vecteur de densités que je retourne à Tableau, afin que le polygone soit collé à l'axe. Etant donné que Tableau attend autant de valeurs en sortie qu'il en fourni en entrée, je vais interpoler _n-2_ points avec la fonction `spline`, puis ajouter soit zéro au début et à la fin du vecteur pour les polygones, soit répéter la valeur de chaque extrémité pour les courbes. Je retourne aussi les coordonnées de l'axe auxquelles les densités sont estimées. Le tout sera parsé dans Tableau, comme pour la courbe de tendance.  
-```{r Tableau_density, results="hide"}
+```{r Tableau_density}
 # Tableau variables
 # values are given as an example here, replace with args in Tableau
 vec <- x
@@ -358,33 +360,36 @@ invisible(paste0(coords[,1], "|L|", coords[,2], "|P|", coords[,3]))
 
 De retour dans Tableau, je créé deux champs calculés de type _SCRIPT_STR_, pour les densités marginales de __X__ et de __Y__. Chaque champ est parsé pour obtenir les coordonnées des points sur l'axe en question ainsi que les estimations de densité pour les lignes et les polygones (ces champs sont rassemblés dans le dossier _Courbes de densité_). On y ajoute __Index__ pour le chemin et les lignes de référence pour l'alignement des axes.  
 
-Le resultat est le suivant pour __X__ (pour __Y__ il suffira de permuter les axes de la vue). Remarquez que si vous choisissez une dimension pour les couleurs, cela fonctionne parfaitement !   
+Le résultat est le suivant pour __X__ (pour __Y__ il suffira de permuter les axes de la vue). Remarquez que si vous choisissez une dimension pour les couleurs, cela fonctionne parfaitement !  
 
 ![Courbes de densité pour l'axe des X](figures/courbe_de_densite.png)  
 <br>  
 
-#### Agencement des vues dans un tableau de bord
-À ce stade le plus dur est fait. Amenez vos trois vues dans un tableau de bord, ajoutez filtres et paramètres, puis mettez en forme à votre convenance. Faites attention à la largeur / hauteur des axes de vos vues. Par exemple, la largeur de l'axe des ordonnées sur le nuage de points doit être la même que celle de l'axe de gauche sur la vue des densités marginales de __X__.  
-
-```{r corr}
+#### Coefficient de corrélation de Pearson
+Comme dans la vue que je proposais en R avec _ggplot2_, j'ajoute le résultat d'un [test de corrélation de Pearson](https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient). Ici je ne vais pas trop détailler, la démarche et le code sont assez simples et l'intégration dans Tableau ressemble beaucoup au cas de la courbe de tendance. J'utilise une petite astuce pour n'afficher qu'un élément tout en ayant désagrégé les mesures (voir le filtre additionnel sur la vue et le champ calculé contenant le code R).  
+```{r Tableau_cor}
 # Tableau variables
 # values are given as an example here, replace with args in Tableau
-x <- x
-y <- y
+a <- x
+b <- y
 
-# compute Pearson s product-moment correlation
-test <- cor.test(x, y, method="pearson")
-
-# format p value
-pvalue_str <- if(test$p.value <= 2.2e-16) {
-      paste0("p-value: < ", formatC(2.2e-16, digits=1, format="e"))
-} else if(test$p.value >= 0.001) {
-      paste0("p-value: ", formatC(test$p.value, digits=4, format="f"))
-} else {
-      paste0("p-value: ", formatC(test$p.value, digits=1, format="e"))
-}
+# compute Pearson's product-moment correlation
+test <- cor.test(a, b, method="pearson")
 
 # return data to Tableau
-invisible(paste0(test$estimate, "|P|", test$p.value, "|S|", paste0(capture.output(test), collapse="\n")))
+invisible(paste0(
+      test$estimate, "|P|", test$p.value, "|S|", 
+      paste0(capture.output(test), collapse="\n")
+      ))
 ```
+<br>  
 
+#### Agencement des vues dans un tableau de bord
+À ce stade le plus dur est fait. Amenez vos quatre vues dans un tableau de bord, ajoutez filtres et paramètres, puis mettez en forme à votre convenance. Si ce n'est pas déjà fait, activez la sélection via la légende des couleurs. Faites aussi attention à la largeur / hauteur des axes de vos vues. Par exemple, la largeur de l'axe des ordonnées sur le nuage de points doit être la même que celle de l'axe de gauche sur la vue des densités marginales de __X__. Enfin, vous pouvez ajouter deux objets flottants pour le titre des axes.  
+
+Un cas particulier peut se présenter lorsque la courbe de tendance et/ou son intervalle de confiance dépassent le minimum ou le maximum de l'axe des ordonnées (__Y__ étant dans ce cas une fonction de __X__). C'est par exemple le cas si je mets le pourcentage d'emplois hors région en abscisse et le taux de chômage régional en ordonnée tout en choisissant un modèle GAM pour ma courbe de tendance. Ce problème est gênant pour l'alignement des axes, pour le résoudre il suffit de faire un test avant d'afficher les éléments de la courbe. Allez voir les champs __cropped lwr__, __cropped fit__ et __cropped upr__ pour voir le calcul.  
+
+Si vous avez suivi jusqu'ici, félicitation ! Votre produit fini devrait ressembler à l'image ci-dessous.  
+
+![Nuage de points amélioré](figures/dashboard_nuage_densites.png)  
+<br>  

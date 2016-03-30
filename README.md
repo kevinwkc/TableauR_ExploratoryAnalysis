@@ -17,7 +17,7 @@ This repository contains:
 Notes on the _Rserve_ directory:  
 * _Rserve.cmd_: double-clicking on this file will start a R session and run the code in _Rserve_run.R_  
 * _Rserve_run.R_: this file contains the R script that will start Rserve  
-	+ since Rserve is started using the R Rserve() function, so the path to R.dll is automatically sent to Rserve.exe  
+	+ since Rserve is started using the R Rserve() function, the path to R.dll is automatically sent to Rserve.exe  
 	+ we also pass _Rserve.conf_ as an argument  
 * _Rserve.conf_: this simply tells Rserve to source _Rserve_preload.R_ at startup  
 * _Rserve_preload.R_: this R script will be sourced when starting Rserve  

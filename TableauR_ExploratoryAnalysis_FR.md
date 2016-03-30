@@ -53,7 +53,8 @@ if(!file.exists("./data/insertion_raw.csv")) {
       if(!file.exists("./data")) {dir.create("./data")}
       dataUrl <- paste0("https://data.enseignementsup-recherche.gouv.fr/explore/dataset/", 
                         "fr-esr-insertion_professionnelle-master/download?format=csv")
-      download(dataUrl, dest="./data/insertion_raw.csv", mode="wb")
+
+      download(dataUrl, dest="./data/insertion_raw.csv", mode="wb", quiet=TRUE)
 } else message("The dataset had previously been downloaded.")
 
 # read data with fread(), with list of strings to ignore
@@ -107,6 +108,7 @@ str(insertion)
 ##  $ salaire_net_mensuel_regional_3eme_quartile   : int  2130 2130 2080 2170 2090 2090 2110 2110 2110 2130 ...
 ##  - attr(*, ".internal.selfref")=<externalptr>
 ```
+_Dernière date de téléchargement du jeu de données : 2016-03-30 11:41:36._  
 <br>  
 
 # Développement des outils d'analyse
@@ -231,7 +233,7 @@ modelType <- "lm_pol_2" # as an example
 confLvl <- 0.95 # confidence interval
 loessLimit <- 5000 # n limit for computing LOESS
 n <- length(y)
-modelType <- unlist(strsplit(modelType, "_", fixed = TRUE))
+modelType <- unlist(strsplit(modelType, "_", fixed=TRUE))
 
 # remove missing values (only in R, do this with filters in Tableau)
 complete <- complete.cases(x, y)
@@ -308,10 +310,10 @@ if(modelType[1] == "loess/gam") {
 
 # capture model summary output
 # Tableau will convert "\n" to new lines
-modelSummary <- paste0(capture.output(summary(model)), collapse = "\n")
+modelSummary <- paste0(capture.output(summary(model)), collapse="\n")
 
 # return data to tableau
-paste0(trendLine, "|S|", modelSummary)
+invisible(paste0(trendLine, "|S|", modelSummary))
 ```
 <br>  
 
@@ -322,7 +324,7 @@ Quelques modifications minimes permettent d'interfacer ce code dans Tableau (cha
 * le champ __upr__ pour la limite haute de la courbe de tendance  
 * le champ __summary__ pour le résumé du modèle  
 
-Ensuite pour ajouter le tout dans la vue :  
+Ignorez pour le moment les champs dont le nom commence par "cropped". Ensuite pour ajouter le tout dans la vue :  
 
 1. glissez __Noms de mesures__ dans les filtres  
 2. sélectionnez les champs __lwr__, __fit__ et __upr__  
@@ -368,27 +370,54 @@ to_dens <- max(vec) + 3 * bw_dens
 if(to_dens > axisMax) {to_dens <- axisMax}
 
 # computes kernel density estimates
-dens <- density(vec, bw = bw_dens, kernel = "gaussian", n = n_dens, from = from_dens, to = to_dens)
+dens <- density(vec, bw=bw_dens, kernel = "gaussian", n=n_dens, from=from_dens, to=to_dens)
 
 # perform cubic spline interpolation in order to have a number of points equal to the sample size
 # (we use sample size minus two because we need to have zero values on the left and right ends in
 # order to draw polygons in Tableau)
-coords <- spline(dens$x, dens$y, n = size - 2)
+coords <- spline(dens$x, dens$y, n=size - 2)
 coords <- cbind(c(coords$x[1], coords$x, coords$x[size - 2]), 
                 c(coords$y[1], coords$y, coords$y[size - 2]), 
                 c(0, coords$y, 0))
 
 # return as a string that will be parsed in tableau: x, y for lines, y for polygons
-paste0(coords[,1], "|L|", coords[,2], "|P|", coords[,3])
+invisible(paste0(coords[,1], "|L|", coords[,2], "|P|", coords[,3]))
 ```
 <br>  
 
 De retour dans Tableau, je créé deux champs calculés de type _SCRIPT_STR_, pour les densités marginales de __X__ et de __Y__. Chaque champ est parsé pour obtenir les coordonnées des points sur l'axe en question ainsi que les estimations de densité pour les lignes et les polygones (ces champs sont rassemblés dans le dossier _Courbes de densité_). On y ajoute __Index__ pour le chemin et les lignes de référence pour l'alignement des axes.  
 
-Le resultat est le suivant pour __X__ (pour __Y__ il suffira de permuter les axes de la vue). Remarquez que si vous choisissez une dimension pour les couleurs, cela fonctionne parfaitement !   
+Le résultat est le suivant pour __X__ (pour __Y__ il suffira de permuter les axes de la vue). Remarquez que si vous choisissez une dimension pour les couleurs, cela fonctionne parfaitement !  
 
 ![Courbes de densité pour l'axe des X](figures/courbe_de_densite.png)  
 <br>  
 
+#### Coefficient de corrélation de Pearson
+Comme dans la vue que je proposais en R avec _ggplot2_, j'ajoute le résultat d'un [test de corrélation de Pearson](https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient). Ici je ne vais pas trop détailler, la démarche et le code sont assez simples et l'intégration dans Tableau ressemble beaucoup au cas de la courbe de tendance. J'utilise une petite astuce pour n'afficher qu'un élément tout en ayant désagrégé les mesures (voir le filtre additionnel sur la vue et le champ calculé contenant le code R).  
+
+```r
+# Tableau variables
+# values are given as an example here, replace with args in Tableau
+a <- x
+b <- y
+
+# compute Pearson's product-moment correlation
+test <- cor.test(a, b, method="pearson")
+
+# return data to Tableau
+invisible(paste0(
+      test$estimate, "|P|", test$p.value, "|S|", 
+      paste0(capture.output(test), collapse="\n")
+      ))
+```
+<br>  
+
 #### Agencement des vues dans un tableau de bord
-...  
+À ce stade le plus dur est fait. Amenez vos quatre vues dans un tableau de bord, ajoutez filtres et paramètres, puis mettez en forme à votre convenance. Si ce n'est pas déjà fait, activez la sélection via la légende des couleurs. Faites aussi attention à la largeur / hauteur des axes de vos vues. Par exemple, la largeur de l'axe des ordonnées sur le nuage de points doit être la même que celle de l'axe de gauche sur la vue des densités marginales de __X__. Enfin, vous pouvez ajouter deux objets flottants pour le titre des axes.  
+
+Un cas particulier peut se présenter lorsque la courbe de tendance et/ou son intervalle de confiance dépassent le minimum ou le maximum de l'axe des ordonnées (__Y__ étant dans ce cas une fonction de __X__). C'est par exemple le cas si je mets le pourcentage d'emplois hors région en abscisse et le taux de chômage régional en ordonnée tout en choisissant un modèle GAM pour ma courbe de tendance. Ce problème est gênant pour l'alignement des axes, pour le résoudre il suffit de faire un test avant d'afficher les éléments de la courbe. Allez voir les champs __cropped lwr__, __cropped fit__ et __cropped upr__ pour voir le calcul.  
+
+Si vous avez suivi jusqu'ici, félicitation ! Votre produit fini devrait ressembler à l'image ci-dessous.  
+
+![Nuage de points amélioré](figures/dashboard_nuage_densites.png)  
+<br>  

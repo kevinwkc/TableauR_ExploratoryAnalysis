@@ -7,8 +7,8 @@ repos <- getOption("repos")
 repos["CRAN"] <- "https://cloud.r-project.org/"
 options(repos=repos)
 
-# You can specify a set of R packages, comma 
-# separated without quotes, inside the p_load function
+# You can specify a set of R packages, comma separated
+# without quotes, inside the p_load() function
 # These will be loaded/installed when starting Rserve
 if(!require("pacman")) install.packages("pacman") 
 pacman::p_load(mgcv)
