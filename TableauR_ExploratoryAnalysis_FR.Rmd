@@ -24,7 +24,7 @@ En revanche, ces outils s’adressent malgré tout principalement à des dévelo
 
 L'article est pensé pour rester vivant, c'est pourquoi il est hébergé sur mon compte Github. Au fur et à mesure que les idées d'utilisation de R dans Tableau me viendront, je les ajouteraient au répertoire et l'article sera automatiquement mis à jour. Au final, le but est de construire un ou plusieurs classeurs Tableau contenant des propositions de vues exploitant du code R, et de fournir toutes les éléments nécessaires à la reproduction de ces vues en utilisant vos données.  
 
-Dans chaque cas j'essaye de penser mon code R pour qu'il puisse s'adapter à un maximum de situations, cependant si vous avez des difficultés n'hésitez pas à [me contacter](mailto:skeith@actinvision.com).  
+Dans chaque cas j'essaye de penser mon code R pour qu'il puisse s'adapter à un maximum de situations. Cependant, n'hésitez pas à [me contacter](mailto:skeith@actinvision.com) si vous avez des difficultés.  
 <br>  
 
 ### Prérequis
