@@ -533,8 +533,8 @@ vec &lt;-<span class="st"> </span>x
 <span class="co"># gather bloxplot summary statistics</span>
 vecSum &lt;-<span class="st"> </span>grDevices::<span class="kw">boxplot.stats</span>(vec)
 
-<span class="co"># return as a string that will be parsed in tableau: x, y for lines, y for polygons</span>
-<span class="co"># first the 5 stats and then the confidence interval for the median</span>
+<span class="co"># return as a string that will be parsed in tableau: first the 5 boxplot stats </span>
+<span class="co"># and then the confidence interval for the median</span>
 <span class="kw">invisible</span>(<span class="kw">paste0</span>(
       <span class="st">&quot;|a|&quot;</span>, vecSum$stats[<span class="dv">1</span>], <span class="st">&quot;|b|&quot;</span>, vecSum$stats[<span class="dv">2</span>], <span class="st">&quot;|c|&quot;</span>, vecSum$stats[<span class="dv">3</span>], 
       <span class="st">&quot;|d|&quot;</span>, vecSum$stats[<span class="dv">4</span>], <span class="st">&quot;|e|&quot;</span>, vecSum$stats[<span class="dv">5</span>], 

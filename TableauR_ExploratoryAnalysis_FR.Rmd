@@ -427,8 +427,8 @@ vec <- x
 # gather bloxplot summary statistics
 vecSum <- grDevices::boxplot.stats(vec)
 
-# return as a string that will be parsed in tableau: x, y for lines, y for polygons
-# first the 5 stats and then the confidence interval for the median
+# return as a string that will be parsed in tableau: first the 5 boxplot stats 
+# and then the confidence interval for the median
 invisible(paste0(
       "|a|", vecSum$stats[1], "|b|", vecSum$stats[2], "|c|", vecSum$stats[3], 
       "|d|", vecSum$stats[4], "|e|", vecSum$stats[5], 
