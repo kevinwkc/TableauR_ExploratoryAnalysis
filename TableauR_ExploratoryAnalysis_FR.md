@@ -233,6 +233,7 @@ modelType <- "loess/gam" # as an example
 confLvl <- 0.95 # confidence interval
 loessLimit <- 5000 # n limit for computing LOESS
 n <- length(y)
+# parse parameter string
 modelType <- unlist(strsplit(modelType, "_", fixed=TRUE))
 
 # remove missing values (only in R, do this with filters in Tableau)
@@ -420,6 +421,50 @@ Un cas particulier peut se présenter lorsque la courbe de tendance et/ou son in
 Si vous avez suivi jusqu'ici, félicitation ! Votre produit fini devrait ressembler à l'image ci-dessous.  
 
 ![Nuage de points amélioré](figures/dashboard_nuage_densites.png)  
+<br>  
+
+### Violin plot
+Les explications sont à venir, mais le code est déjà là. Les vues sont également déjà disponibles dans le classeur Tableau. Un peu de patience !  
+
+```r
+# Tableau variable
+# as an example, replace with .arg1 in Tableau
+vec <- x
+
+###### calculated variables ######
+# number of elements in the data
+size <- length(vec)
+# find next power of two for number of kernel density estimates
+n_dens <- 2^ceiling(log2(size))
+
+# computes kernel density estimates
+dens <- density(vec, kernel="gaussian", n=n_dens)
+
+# perform cubic spline interpolation in order to have a number of points equal to the sample size
+coords <- spline(dens$x, dens$y, n=size)
+coords <- cbind(coords$x, coords$y)
+
+# return as a string that will be parsed in tableau: x, y for lines, y for polygons
+invisible(paste0(coords[,1], "|", coords[,2]))
+```
+  
+
+```r
+# Tableau variable
+# as an example, replace with .arg1 in Tableau
+vec <- x
+
+# gather bloxplot summary statistics
+vecSum <- grDevices::boxplot.stats(vec)
+
+# return as a string that will be parsed in tableau: x, y for lines, y for polygons
+# first the 5 stats and then the confidence interval for the median
+invisible(paste0(
+      "|a|", vecSum$stats[1], "|b|", vecSum$stats[2], "|c|", vecSum$stats[3], 
+      "|d|", vecSum$stats[4], "|e|", vecSum$stats[5], 
+      "|f|", vecSum$conf[1], "|g|", vecSum$conf[2], "|h|"
+      ))
+```
 <br>  
 
 ### Autres vues
