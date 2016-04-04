@@ -16,6 +16,8 @@ J'ai l'habitude de travailler avec R, et R propose de très bonnes librairies po
 En revanche, ces outils s’adressent malgré tout principalement à des développeurs R (ou Python et autres pour Plotly). Pour un utilisateur classique, les outils BI "as a service" comme Tableau restent tout de même plus adaptés. Depuis sa version 8.1, Tableau propose une intégration avec R. J'ai pu entendre plusieurs personnes qualifier cette fonctionnalité de "gadget", et dans un sens je ne peux être complètement en désaccord. En effet, cela ne transforme clairement pas Tableau en un environnement pour la programmation scientifique et les statistiques avancées — Tableau reste avant tout un outil de data visualisation. Cependant, je suis persuadé que R peut considérablement renforcer Tableau dans le domaine de l'analyse exploratoire, et c'est ce que je vais tenter de montrer dans ce billet de blog.  
 
 L'article est pensé pour rester vivant, c'est pourquoi il est hébergé sur mon compte Github. Au fur et à mesure que les idées d'utilisation de R dans Tableau me viendront, je les ajouteraient au répertoire et l'article sera automatiquement mis à jour. Au final, le but est de construire un ou plusieur classeurs Tableau contenant des propositions de vues exploitant du code R, et de fournir toutes les éléments nécessaires à la reproduction de ces vues en utilisant vos données.  
+
+Dans chaque cas j'essaye de penser mon code R pour qu'il puisse s'adapter à un maximum de situations, cependant si vous avez des difficultés n'hésitez pas à [me contacter](mailto:skeith@actinvision.com).  
 <br>  
 
 ### Prérequis
