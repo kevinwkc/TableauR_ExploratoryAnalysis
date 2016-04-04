@@ -5,11 +5,17 @@
 
 # Introduction
 ### Vous avez dit analyse exploratoire ?
-...  
+Lorsque l'on met la main sur un nouveau jeu de données, que ce soit dans une optique de reporting ou dans le but de réaliser des analyses plus avancées, il est préférable de passer un peu de temps sur l'exploration des données avant de se lancer plus en avant dans un projet analytique. C'est une bonne façon de comprendre et de se familiariser avec les données, et cela permet aussi de prendre du recul et d'éviter de se lancer dans une analyse biaisée par les idées préconçues que l'on peut avoir.  
+
+Si on commence un projet de data visualisation en ayant défini une maquette sans explorer les données, on risque de passer à côté de la découverte d'informations intéressantes : on ne trouvera que ce que l'on veut trouver. Quand on passe sur un projet de [data science](http://www.decideo.fr/L-apprentissage-automatique-ou-comment-les-ordinateurs-apprennent-a-partir-des-donnees_a8338.html), cela devient indispensable : passer du temps sur l'exploration des données permettra ainsi de contrôler la qualité des données, d'identifier les variables intéressantes, de définir les éventuelles transformations à appliquer, ou encore de choisir les meilleurs outils statistiques pour la suite de l'analyse. D'ailleurs, la plupart des [modèles](https://fr.wikipedia.org/wiki/Cross_Industry_Standard_Process_for_Data_Mining) de gestion de projets "data" s'accordent sur l'importance de l'analyse exploratoire dans le processus de développement.  
 <br>  
 
 ### Pourquoi Tableau est un bon candidat
-...  
+J'ai l'habitude de travailler avec R, et R propose de très bonnes librairies pour l'analyse exploratoire. Côté data visualisation, on a l'incontournable [_ggplot2_](http://docs.ggplot2.org/) qui, avec un peu d'expérience, permet déjà de réaliser de belles choses. Vous pouvez ensuite transformer vos réalisations en applications web interactives avec des outils comme [Plotly](https://plot.ly/r/) ou [Shiny](http://shiny.rstudio.com/). Ces outils sont formidables pour un data scientist qui souhaite rapidement proposer des visualisation interactives de son travail, sans avoir besoin de compétences en développement web. L'avantage est de pouvoir travailler rapidement, avec des outils open-source, et surtout sans aucune limitation au niveau du traitement et de la manipulation des données.  
+
+En revanche, ces outils s’adressent malgré tout principalement à des développeurs R (ou Python et autres pour Plotly). Pour un utilisateur classique, les outils BI "as a service" comme Tableau restent tout de même plus adaptés. Depuis sa version 8.1, Tableau propose une intégration avec R. J'ai pu entendre plusieurs personnes qualifier cette fonctionnalité de "gadget", et dans un sens je ne peux être complètement en désaccord. En effet, cela ne transforme clairement pas Tableau en un environnement pour la programmation scientifique et les statistiques avancées — Tableau reste avant tout un outil de data visualisation. Cependant, je suis persuadé que R peut considérablement renforcer Tableau dans le domaine de l'analyse exploratoire, et c'est ce que je vais tenter de montrer dans ce billet de blog.  
+
+L'article est pensé pour rester vivant, c'est pourquoi il est hébergé sur mon compte Github. Au fur et à mesure que les idées d'utilisation de R dans Tableau me viendront, je les ajouteraient au répertoire et l'article sera automatiquement mis à jour. Au final, le but est de construire un ou plusieur classeurs Tableau contenant des propositions de vues exploitant du code R, et de fournir toutes les éléments nécessaires à la reproduction de ces vues en utilisant vos données.  
 <br>  
 
 ### Prérequis
@@ -111,7 +117,7 @@ _Dernière date de téléchargement du jeu de données : 2016-03-30 11:41:36._
 ### Nuage de points et densitées marginales
 L'un de mes premiers réflexes lorsque j'explore un nouveau jeu de données est de rechercher des relations entre les différentes variables. Pour les variables quantitatives, le nuage de point est un incontournable. Sur ce type de graphique, j'ai également tendance à utiliser la couleur pour comparer les différents niveaux d'une variable qualitative (ou dimension).  
 
-Le problème avec les nuages de points, c'est qu'ils ont tendance à devenir rapidement illisibles lorsqu'il y a beaucoup d'éléments à afficher. Il est donc intéressant d'enrichir ces vues. On peut ainsi y ajouter différents éléments : une courbe de tendance, le résultat d'un test statistique, ou encore les densités marginales de nos variables...  
+Le problème avec les nuages de points, c'est qu'ils ont tendance à devenir rapidement illisibles lorsqu'il y a beaucoup d'éléments à afficher. Il est donc intéressant d'enrichir ces vues. On peut ainsi y ajouter différents éléments : une courbe de tendance, le résultat d'un test statistique, ou encore les densités marginales de nos variables... Ce nuage de point amélioré sera ma première proposition de vue intégrant du code R dans Tableau.  
 
 Ci-dessous une petite démonstration rapide en R avec le package _ggplot2_. J'ai ajouté une courbe de régression [LOESS](https://en.wikipedia.org/wiki/Local_regression), le résultat d'un [test de corrélation de Pearson](https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient) ainsi que les [distributions marginales](https://en.wikipedia.org/wiki/Marginal_distribution) déclinées en couleurs sur les différents domaines d'études proposés par nos universités. C'est une démonstration rapide, je n'ai donc pas pris la peine d'afficher la légende. Vous remarquerez aussi que cela demande beaucoup de code, et que l'alignement des différents éléments reste assez approximatif.  
 
@@ -261,8 +267,8 @@ if(modelType[1] == "loess/gam") {
             require(mgcv)
       }
       # compute gam model...
-      model <- gam(y ~ s(x, bs = "cs")) # smoothing basis: cubic regression splines
-      pred <- predict(model, type = "link", se.fit=TRUE)
+      model <- gam(y ~ s(x, bs="cs")) # smoothing basis: cubic regression splines
+      pred <- predict(model, type="link", se.fit=TRUE)
       DFE <- n - 1 # degrees of freedom
       # prepare data for trend line
       trendLine <- paste0(
@@ -362,7 +368,7 @@ to_dens <- max(vec) + 3 * bw_dens
 if(to_dens > axisMax) {to_dens <- axisMax}
 
 # computes kernel density estimates
-dens <- density(vec, bw=bw_dens, kernel = "gaussian", n=n_dens, from=from_dens, to=to_dens)
+dens <- density(vec, bw=bw_dens, kernel="gaussian", n=n_dens, from=from_dens, to=to_dens)
 
 # perform cubic spline interpolation in order to have a number of points equal to the sample size
 # (we use sample size minus two because we need to have zero values on the left and right ends in
@@ -414,3 +420,6 @@ Si vous avez suivi jusqu'ici, félicitation ! Votre produit fini devrait ressemb
 ![Nuage de points amélioré](figures/dashboard_nuage_densites.png)  
 <br>  
 
+### Autres vues
+C'est tout pour le moment, mais d'autres vues sont à venir pour améliorer cet outil d'analyse.  
+<br>  
