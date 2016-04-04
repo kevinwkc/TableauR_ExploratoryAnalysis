@@ -467,6 +467,11 @@ invisible(paste0(
 ```
 <br>  
 
+Un peu de teasing tout de même :  
+
+![Teasing Violin plot](figures/violin_teasing.png)  
+<br>  
+
 ### Autres vues
 C'est tout pour le moment, mais d'autres vues sont à venir pour améliorer cet outil d'analyse.  
 <br>  
