@@ -112,7 +112,7 @@ str(insertion)
 ##  $ salaire_net_mensuel_regional_3eme_quartile   : int  2130 2130 2080 2170 2090 2090 2110 2110 2110 2130 ...
 ##  - attr(*, ".internal.selfref")=<externalptr>
 ```
-_Dernière date de téléchargement du jeu de données : 2016-03-30 11:41:36._  
+_Dernière date de téléchargement du jeu de données : 2016-04-04 20:04:42._  
 <br>  
 
 # Développement des outils d'analyse
@@ -362,6 +362,8 @@ size <- length(vec)
 # find next power of two for number of kernel density estimates
 n_dens <- 2^ceiling(log2(size))
 # choose smoothing bandwidth for the Gaussian kernel density estimator
+# note that we use Silverman's (1986) rule of thumb, with factor 0.9, however the
+# methods of Sheather & Jones (1991) might be better for larger datasets (bw.SJ)
 bw_dens <- bw.nrd0(vec) 
 # select the left and right-most points of the axis at which the density is to be estimated
 # this will be either 3 times the bandwidth outside of the vector range, or axisMin/axisMax
@@ -386,7 +388,7 @@ invisible(paste0(coords[,1], "|L|", coords[,2], "|P|", coords[,3]))
 ```
 <br>  
 
-De retour dans Tableau, je crée deux champs calculés de type _SCRIPT_STR_, pour les densités marginales de __X__ et de __Y__. Chaque champ est parsé pour obtenir les coordonnées des points sur l'axe en question ainsi que les estimations de densité pour les lignes et les polygones (ces champs sont rassemblés dans le dossier _Courbes de densité_). On y ajoute __Index__ pour le chemin et les lignes de référence pour l'alignement des axes.  
+De retour dans Tableau, je crée deux champs calculés de type _SCRIPT_STR_, pour les densités marginales de __X__ et de __Y__. Chaque champ est parsé pour obtenir les coordonnées des points sur l'axe en question ainsi que les estimations de densité pour les lignes et les polygones (ces champs sont rassemblés dans le dossier _Courbes de densité_). On y ajoute __DensIndex__ pour le chemin et les lignes de référence pour l'alignement des axes.  
 
 Le résultat est le suivant pour __X__ (pour __Y__ il suffira de permuter les axes de la vue). Remarquez que si vous choisissez une dimension pour les couleurs, cela fonctionne parfaitement !  
 
@@ -438,7 +440,9 @@ size <- length(vec)
 n_dens <- 2^ceiling(log2(size))
 
 # computes kernel density estimates
-dens <- density(vec, kernel="gaussian", n=n_dens)
+# note that we use Silverman's (1986) rule of thumb in order to choose the bandwith, 
+# however the method "SJ" (Sheather & Jones) might be better for larger datasets
+dens <- density(vec, bw="nrd0", kernel="gaussian", n=n_dens)
 
 # perform cubic spline interpolation in order to have a number of points equal to the sample size
 coords <- spline(dens$x, dens$y, n=size)
