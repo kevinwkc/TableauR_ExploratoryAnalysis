@@ -1,6 +1,6 @@
 # Un outil d'analyse exploratoire avec Tableau et R
-[Simon Keith](Profil publichttps://fr.linkedin.com/in/simonkth), [Actinvision](http://www.actinvision.fr/)  
-16 mars 2016  
+[Simon Keith](https://fr.linkedin.com/in/simonkth), [Actinvision](http://www.actinvision.fr/)  
+7 avril 2016  
 <br>  
 
 # Introduction

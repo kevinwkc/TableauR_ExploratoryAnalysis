@@ -1,7 +1,7 @@
 ---
 title: "Un outil d'analyse exploratoire avec Tableau et R"
-author: '[Simon Keith](Profil publichttps://fr.linkedin.com/in/simonkth), [Actinvision](http://www.actinvision.fr/)'
-date: "16 mars 2016"
+author: '[Simon Keith](https://fr.linkedin.com/in/simonkth), [Actinvision](http://www.actinvision.fr/)'
+date: "7 avril 2016"
 output:
   html_document:
     highlight: zenburn
